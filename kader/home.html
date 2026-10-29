@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiPosya — Dashboard Kader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --surface:#ffffff;
+    --surface-2:#fafbfc;
+    --border:#ebedf0;
+    --border-strong:#e1e4e8;
+    --text:#14161a;
+    --text-2:#5b626e;
+    --text-3:#8a909c;
+    --accent:#0f9d7a;
+    --accent-weak:#e7f6f1;
+    --accent-ink:#0b7a5f;
+    --green:#15a05a;--green-bg:#e8f6ed;
+    --amber:#c77a16;--amber-bg:#fbf1e1;
+    --red:#d64545;--red-bg:#fbeaea;
+    --blue:#3a6ff0;--blue-bg:#eaf0fe;
+    --radius:16px;--radius-sm:10px;--radius-xs:8px;
+    --shadow-sm:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.05);
+    --shadow-md:0 2px 6px rgba(16,24,40,.05),0 8px 24px rgba(16,24,40,.05);
+    --sidebar-w:260px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    font-size:14px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:-.01em;
+  }
+  .app{display:flex;min-height:100vh}
+
+  /* ============ SIDEBAR ============ */
+  .sidebar{
+    width:var(--sidebar-w);
+    flex-shrink:0;
+    background:var(--surface);
+    border-right:1px solid var(--border);
+    display:flex;flex-direction:column;
+    padding:18px 14px;
+    position:sticky;top:0;height:100vh;
+  }
+  .brand{display:flex;align-items:center;gap:11px;padding:6px 8px 16px}
+  .brand .logo{
+    width:38px;height:38px;border-radius:11px;flex-shrink:0;
+    background:linear-gradient(145deg,var(--accent),#0bbf90);
+    display:grid;place-items:center;color:#fff;font-weight:700;font-size:17px;
+    box-shadow:0 4px 10px rgba(15,157,122,.28);
+  }
+  .brand .name{font-weight:700;font-size:15.5px;letter-spacing:-.02em}
+  .brand .sub{font-size:11.5px;color:var(--text-3);font-weight:450}
+
+  .nav-group{margin-top:14px}
+  .nav-label{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);padding:6px 10px 7px}
+  .nav-item{
+    display:flex;align-items:center;gap:11px;
+    padding:9px 10px;border-radius:var(--radius-sm);
+    color:var(--text-2);font-weight:500;font-size:13.5px;
+    cursor:pointer;margin-bottom:2px;text-decoration:none;position:relative;
+  }
+  .nav-item:hover{background:var(--surface-2);color:var(--text)}
+  .nav-item.active{background:var(--accent-weak);color:var(--accent-ink);font-weight:600}
+  .nav-item .ico{width:18px;height:18px;flex-shrink:0;opacity:.9}
+  .nav-item.active .ico{opacity:1}
+  .nav-item .badge{
+    margin-left:auto;font-size:11px;font-weight:600;
+    background:#eef0f3;color:var(--text-2);padding:1px 8px;border-radius:999px;
+  }
+  .nav-item .badge.new{background:var(--accent-weak);color:var(--accent-ink)}
+
+  .side-foot{margin-top:auto;display:flex;flex-direction:column;gap:12px}
+  .usage{
+    background:var(--surface-2);border:1px solid var(--border);
+    border-radius:var(--radius-sm);padding:13px;
+  }
+  .usage .u-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+  .usage .u-title{font-size:12.5px;font-weight:600}
+  .usage .u-sub{font-size:11.5px;color:var(--text-3);margin-bottom:9px}
+  .bar{height:7px;border-radius:999px;background:#eceef1;overflow:hidden}
+  .bar > span{display:block;height:100%;border-radius:999px;background:var(--accent)}
+  .usage .u-meta{font-size:11px;color:var(--text-3);margin-top:7px}
+  .usage a{color:var(--accent-ink);font-weight:600;text-decoration:none}
+
+  .profile{display:flex;align-items:center;gap:10px;padding:8px 6px;border-top:1px solid var(--border);}
+  .avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;font-weight:600;font-size:13px;color:#fff}
+  .profile .p-name{font-size:13px;font-weight:600;line-height:1.2}
+  .profile .p-role{font-size:11.5px;color:var(--text-3)}
+  .profile .chev{margin-left:auto;color:var(--text-3)}
+
+  /* ============ MAIN ============ */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{
+    height:62px;flex-shrink:0;
+    display:flex;align-items:center;gap:16px;
+    padding:0 26px;border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,.75);backdrop-filter:blur(8px);
+    position:sticky;top:0;z-index:10;
+  }
+  .crumb{font-size:13.5px;color:var(--text-3);font-weight:500}
+  .crumb b{color:var(--text);font-weight:600}
+  .search{
+    margin-left:auto;display:flex;align-items:center;gap:9px;
+    background:var(--surface-2);border:1px solid var(--border);
+    border-radius:var(--radius-sm);padding:8px 12px;width:280px;color:var(--text-3);
+  }
+  .search input{border:none;background:none;outline:none;flex:1;font:inherit;font-size:13px;color:var(--text)}
+  .kbd{font-size:11px;border:1px solid var(--border-strong);border-radius:6px;padding:1px 6px;color:var(--text-3);background:#fff}
+  .icon-btn{
+    width:38px;height:38px;border-radius:var(--radius-sm);border:1px solid var(--border);
+    background:var(--surface);display:grid;place-items:center;color:var(--text-2);cursor:pointer;position:relative;
+  }
+  .icon-btn:hover{background:var(--surface-2)}
+  .icon-btn .dot{position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:var(--red);border:2px solid #fff}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 15px;border-radius:var(--radius-sm);font-weight:600;font-size:13px;
+    cursor:pointer;border:1px solid transparent;text-decoration:none;white-space:nowrap;
+  }
+  .btn.primary{background:var(--accent);color:#fff;box-shadow:0 2px 6px rgba(15,157,122,.25)}
+  .btn.primary:hover{background:var(--accent-ink)}
+  .btn.ghost{background:var(--surface);border-color:var(--border-strong);color:var(--text)}
+  .btn.ghost:hover{background:var(--surface-2)}
+
+  .content{padding:24px 26px 40px;max-width:1320px;width:100%;margin:0 auto}
+
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+  .page-head h1{font-size:23px;font-weight:700;letter-spacing:-.03em}
+  .page-head .p-sub{font-size:13.5px;color:var(--text-2);margin-top:3px}
+  .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .segmented{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px}
+  .segmented button{border:none;background:none;font:inherit;font-size:12.5px;font-weight:500;color:var(--text-2);padding:6px 12px;border-radius:7px;cursor:pointer}
+  .segmented button.on{background:var(--accent-weak);color:var(--accent-ink);font-weight:600}
+  .toggle{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-2);font-weight:500}
+  .switch{width:36px;height:21px;border-radius:999px;background:var(--accent);position:relative;flex-shrink:0}
+  .switch::after{content:"";position:absolute;top:2px;right:2px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:var(--shadow-sm)}
+
+  /* ====== KPI CARDS ====== */
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm)}
+  .kpi{padding:17px 18px}
+  .kpi .k-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .kpi .k-label{font-size:12.5px;color:var(--text-2);font-weight:500}
+  .kpi .k-ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center}
+  .kpi .k-val{font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1}
+  .kpi .k-foot{display:flex;align-items:center;gap:7px;margin-top:11px;font-size:12px;color:var(--text-3)}
+  .delta{display:inline-flex;align-items:center;gap:3px;font-weight:600;padding:1px 7px;border-radius:999px;font-size:11.5px}
+  .delta.up{color:var(--green);background:var(--green-bg)}
+  .delta.down{color:var(--red);background:var(--red-bg)}
+  .delta.flat{color:var(--text-2);background:#eef0f3}
+
+  /* ====== GRID MAIN ====== */
+  .grid-2{display:grid;grid-template-columns:1.9fr 1fr;gap:16px;margin-bottom:16px}
+  .panel-head{display:flex;align-items:flex-start;justify-content:space-between;padding:18px 20px 6px;gap:12px}
+  .panel-head .t{font-size:15px;font-weight:600;letter-spacing:-.01em}
+  .panel-head .d{font-size:12.5px;color:var(--text-3);margin-top:2px}
+  .panel-head .big{font-size:22px;font-weight:700;letter-spacing:-.02em}
+  .legend{display:flex;gap:16px;padding:0 20px 4px;font-size:12px;color:var(--text-2)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot-l{width:9px;height:9px;border-radius:3px;display:inline-block}
+  .chart-wrap{padding:6px 14px 18px}
+  svg{display:block;width:100%;height:auto}
+
+  /* breakdown list */
+  .bd{padding:8px 20px 18px}
+  .bd-row{padding:12px 0;border-bottom:1px solid var(--border)}
+  .bd-row:last-child{border-bottom:none}
+  .bd-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .bd-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
+  .bd-right{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--text-3)}
+  .bd-right b{color:var(--text);font-weight:600;font-size:13px}
+
+  /* ====== TABLE ====== */
+  .tabs{display:flex;gap:4px;padding:0 20px 2px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  .tabs button{border:none;background:none;font:inherit;font-size:13px;font-weight:500;color:var(--text-2);padding:11px 10px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tabs button.on{color:var(--accent-ink);border-bottom-color:var(--accent);font-weight:600}
+  .tabs .count{font-size:11px;color:var(--text-3);background:#eef0f3;border-radius:999px;padding:0 6px;margin-left:5px}
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);padding:12px 20px;border-bottom:1px solid var(--border)}
+  tbody td{padding:13px 20px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--surface-2)}
+  .cust{display:flex;align-items:center;gap:11px}
+  .cust .nm{font-weight:600;font-size:13px}
+  .cust .mt{font-size:11.5px;color:var(--text-3)}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px}
+  .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  .pill.ok{color:var(--green);background:var(--green-bg)}
+  .pill.warn{color:var(--amber);background:var(--amber-bg)}
+  .pill.crit{color:var(--red);background:var(--red-bg)}
+  .pill.absent{color:var(--text-2);background:#eef0f3}
+  .measure b{font-weight:600}
+  .measure span{color:var(--text-3)}
+  .table-foot{display:flex;align-items:center;justify-content:space-between;padding:13px 20px;font-size:12.5px;color:var(--text-3)}
+  .pager{display:flex;gap:6px}
+  .pager button{width:30px;height:30px;border-radius:8px;border:1px solid var(--border-strong);background:#fff;color:var(--text-2);cursor:pointer;font:inherit;font-size:13px}
+  .pager button.on{background:var(--accent-weak);border-color:transparent;color:var(--accent-ink);font-weight:600}
+
+  /* ====== ACTIVITY ====== */
+  .act{padding:6px 20px 16px}
+  .act-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+  .act-item:last-child{border-bottom:none}
+  .act-item .a-ic{width:34px;height:34px;border-radius:10px;flex-shrink:0;display:grid;place-items:center}
+  .act-item .a-txt{font-size:13px;line-height:1.5}
+  .act-item .a-txt b{font-weight:600}
+  .act-item .a-time{font-size:11.5px;color:var(--text-3);margin-top:2px}
+
+  .bottom-2{display:grid;grid-template-columns:1.9fr 1fr;gap:16px}
+  .grid-2 > *,.bottom-2 > *{min-width:0}
+
+  /* ====== RESPONSIVE ====== */
+  @media(max-width:1100px){
+    .kpi-row{grid-template-columns:repeat(2,1fr)}
+    .grid-2,.bottom-2{grid-template-columns:1fr}
+  }
+  @media(max-width:860px){
+    .sidebar{display:none}
+    .search{width:auto}
+    .search .ph{display:none}
+  }
+  @media(max-width:560px){
+    .kpi-row{grid-template-columns:1fr}
+    .content{padding:18px 16px 34px}
+    .topbar{padding:0 16px}
+  }
+
+  /* ===== TABEL RESPONSIF ===== */
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .table-scroll table{min-width:620px}
+
+  /* ===== NAVIGASI MOBILE (CSS-only) ===== */
+  .nav-toggle{display:none}
+  .menu-btn{
+    display:none;width:38px;height:38px;flex-shrink:0;place-items:center;
+    border-radius:var(--radius-sm);border:1px solid var(--border);
+    background:var(--surface);color:var(--text-2);cursor:pointer;
+  }
+  .menu-btn:hover{background:var(--surface-2)}
+  .nav-backdrop{display:none}
+  @media(max-width:860px){
+    .sidebar{
+      display:flex;position:fixed;left:0;top:0;bottom:0;z-index:120;height:100vh;
+      transform:translateX(-100%);transition:transform .2s ease;
+      box-shadow:0 10px 40px rgba(16,24,40,.18);overflow-y:auto;
+    }
+    .nav-toggle:checked ~ .sidebar{transform:translateX(0)}
+    .nav-toggle:checked ~ .nav-backdrop{
+      display:block;position:fixed;inset:0;z-index:110;background:rgba(16,24,40,.35);
+    }
+    .menu-btn{display:grid}
+    .crumb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  }
+  @media(max-width:600px){
+    .topbar{gap:10px}
+    .topbar .search{display:none}
+    .topbar .btn.ghost{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">S</div>
+      <div>
+        <div class="name">SiPosya</div>
+        <div class="sub">Posyandu Kartini IV&nbsp;A</div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Menu Utama</div>
+      <a href="home.html" class="nav-item active">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </a>
+      <a href="kader-peserta.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Data Peserta <span class="badge">86</span>
+      </a>
+      <a href="kader-input-pengukuran.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        Input Pengukuran
+      </a>
+      <a href="kader-peserta-detail.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+        Grafik Pertumbuhan
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Kegiatan</div>
+      <a href="kader-jadwal.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Jadwal Kegiatan
+      </a>
+      <a href="kader-pengumuman.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3Z"/><path d="M11.6 16.8a3 3 0 0 1-5.8-1.1V14"/></svg>
+        Pengumuman
+      </a>
+      <a href="kader-kehadiran.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Kehadiran <span class="badge new">Baru</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Lainnya</div>
+      <a href="kader-laporan.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+        Laporan Bulanan
+      </a>
+      <a class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        Pengaturan
+      </a>
+    </div>
+
+    <div class="side-foot">
+      <div class="usage">
+        <div class="u-top"><span class="u-title">Data Bulan Ini</span><span style="font-size:12px;font-weight:700;color:var(--accent-ink)">84%</span></div>
+        <div class="u-sub">Peserta sudah ditimbang</div>
+        <div class="bar"><span style="width:84%"></span></div>
+        <div class="u-meta">72 dari 86 peserta &middot; <a>Lihat sisa</a></div>
+      </div>
+      <div class="profile">
+        <div class="avatar" style="background:#6c5ce7">SR</div>
+        <div>
+          <div class="p-name">Sri Rahayu</div>
+          <div class="p-role">Kader Posyandu</div>
+        </div>
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <label class="nav-backdrop" for="nav-toggle" aria-label="Tutup menu"></label>
+
+  <!-- ================= MAIN ================= -->
+  <div class="main">
+
+    <header class="topbar">
+      <label class="menu-btn" for="nav-toggle" aria-label="Buka menu navigasi">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </label>
+      
+      <div class="crumb">Posyandu Kartini IV A &nbsp;·&nbsp; <b>Dashboard</b></div>
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input class="ph" placeholder="Cari peserta, orang tua, kode ID…">
+        <span class="kbd">⌘K</span>
+      </div>
+      <button class="icon-btn" title="Notifikasi">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="dot"></span>
+      </button>
+      <button class="btn ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+        Ekspor
+      </button>
+      <button class="btn primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Input Data
+      </button>
+    </header>
+
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <h1>Selamat datang, Bu Sri 👋</h1>
+          <div class="p-sub">Ringkasan pemantauan Posyandu — Kamis, 29 Oktober 2026</div>
+        </div>
+        <div class="controls">
+          <div class="segmented">
+            <button>Bulan Ini</button>
+            <button class="on">3 Bulan</button>
+            <button>6 Bulan</button>
+            <button>1 Tahun</button>
+          </div>
+          <div class="toggle"><span class="switch"></span> Bandingkan periode</div>
+        </div>
+      </div>
+
+      <!-- KPI -->
+      <div class="kpi-row">
+        <div class="card kpi">
+          <div class="k-top">
+            <span class="k-label">Total Peserta Balita</span>
+            <span class="k-ico" style="background:var(--blue-bg);color:var(--blue)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          </div>
+          <div class="k-val">86</div>
+          <div class="k-foot"><span class="delta up">▲ 4</span> balita baru bulan ini</div>
+        </div>
+
+        <div class="card kpi">
+          <div class="k-top">
+            <span class="k-label">Kehadiran Bulan Ini</span>
+            <span class="k-ico" style="background:var(--green-bg);color:var(--green)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+          </div>
+          <div class="k-val">72 <span style="font-size:15px;color:var(--text-3);font-weight:600">/ 86</span></div>
+          <div class="k-foot"><span class="delta up">▲ 6,2%</span> tingkat kehadiran 83,7%</div>
+        </div>
+
+        <div class="card kpi">
+          <div class="k-top">
+            <span class="k-label">Status Normal</span>
+            <span class="k-ico" style="background:var(--accent-weak);color:var(--accent-ink)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg></span>
+          </div>
+          <div class="k-val">68</div>
+          <div class="k-foot"><span class="delta up">▲ 3</span> 79% dari peserta terukur</div>
+        </div>
+
+        <div class="card kpi">
+          <div class="k-top">
+            <span class="k-label">Perlu Perhatian</span>
+            <span class="k-ico" style="background:var(--amber-bg);color:var(--amber)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+          </div>
+          <div class="k-val">14</div>
+          <div class="k-foot"><span class="delta down">▼ 2</span> termasuk 4 status kritis</div>
+        </div>
+      </div>
+
+      <!-- CHART + BREAKDOWN -->
+      <div class="grid-2">
+        <section class="card">
+          <div class="panel-head">
+            <div>
+              <div class="t">Tren Pertumbuhan Rata-rata</div>
+              <div class="d">Rata-rata berat badan peserta (kg) &middot; 8 bulan terakhir</div>
+            </div>
+            <div style="text-align:right">
+              <div class="big">10,8 kg</div>
+              <div class="d"><span class="delta up" style="font-size:11px">▲ 5,4%</span></div>
+            </div>
+          </div>
+          <div class="legend">
+            <span><i class="dot-l" style="background:var(--accent)"></i> Periode ini</span>
+            <span><i class="dot-l" style="background:#c7ccd3"></i> Periode sebelumnya</span>
+          </div>
+          <div class="chart-wrap">
+            <svg viewBox="0 0 720 268" preserveAspectRatio="none" role="img" aria-label="Grafik tren berat badan rata-rata">
+              <defs>
+                <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#0f9d7a" stop-opacity="0.18"/>
+                  <stop offset="100%" stop-color="#0f9d7a" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <!-- gridlines -->
+              <g stroke="#eef0f2" stroke-width="1">
+                <line x1="56" y1="30"  x2="700" y2="30"/>
+                <line x1="56" y1="82.5" x2="700" y2="82.5"/>
+                <line x1="56" y1="135" x2="700" y2="135"/>
+                <line x1="56" y1="187.5" x2="700" y2="187.5"/>
+                <line x1="56" y1="240" x2="700" y2="240"/>
+              </g>
+              <!-- y labels -->
+              <g fill="#9aa0ab" font-size="11" font-family="Inter" text-anchor="end">
+                <text x="44" y="34">12</text>
+                <text x="44" y="86.5">11</text>
+                <text x="44" y="139">10</text>
+                <text x="44" y="191.5">9</text>
+                <text x="44" y="244">8</text>
+              </g>
+              <!-- area -->
+              <path d="M56,177 L148,161 L240,146 L332,130 L424,119 L516,93 L608,72 L700,51 L700,240 L56,240 Z" fill="url(#fill)"/>
+              <!-- previous (dashed) -->
+              <polyline points="56,198 148,188 240,172 332,161 424,140 516,125 608,109 700,88" fill="none" stroke="#c7ccd3" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- current -->
+              <polyline points="56,177 148,161 240,146 332,130 424,119 516,93 608,72 700,51" fill="none" stroke="#0f9d7a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- markers -->
+              <g fill="#fff" stroke="#0f9d7a" stroke-width="2.2">
+                <circle cx="56" cy="177" r="3.4"/><circle cx="148" cy="161" r="3.4"/><circle cx="240" cy="146" r="3.4"/><circle cx="332" cy="130" r="3.4"/><circle cx="424" cy="119" r="3.4"/><circle cx="516" cy="93" r="3.4"/><circle cx="608" cy="72" r="3.4"/>
+              </g>
+              <!-- highlighted last point -->
+              <circle cx="700" cy="51" r="5" fill="#0f9d7a" stroke="#fff" stroke-width="2.5"/>
+              <!-- x labels -->
+              <g fill="#9aa0ab" font-size="11" font-family="Inter" text-anchor="middle">
+                <text x="56" y="260">Mar</text><text x="148" y="260">Apr</text><text x="240" y="260">Mei</text><text x="332" y="260">Jun</text><text x="424" y="260">Jul</text><text x="516" y="260">Agu</text><text x="608" y="260">Sep</text><text x="700" y="260">Okt</text>
+              </g>
+            </svg>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="panel-head">
+            <div>
+              <div class="t">Status Pertumbuhan</div>
+              <div class="d">86 peserta terukur</div>
+            </div>
+          </div>
+          <div class="bd">
+            <div class="bd-row">
+              <div class="bd-top">
+                <span class="bd-name"><i class="dot-l" style="background:var(--green)"></i> Normal</span>
+                <span class="bd-right"><b>68</b> 79%</span>
+              </div>
+              <div class="bar"><span style="width:79%;background:var(--green)"></span></div>
+            </div>
+            <div class="bd-row">
+              <div class="bd-top">
+                <span class="bd-name"><i class="dot-l" style="background:var(--amber)"></i> Perlu Perhatian</span>
+                <span class="bd-right"><b>14</b> 16%</span>
+              </div>
+              <div class="bar"><span style="width:16%;background:var(--amber)"></span></div>
+            </div>
+            <div class="bd-row">
+              <div class="bd-top">
+                <span class="bd-name"><i class="dot-l" style="background:var(--red)"></i> Kritis</span>
+                <span class="bd-right"><b>4</b> 5%</span>
+              </div>
+              <div class="bar"><span style="width:5%;background:var(--red)"></span></div>
+            </div>
+            <div class="bd-row">
+              <div class="bd-top">
+                <span class="bd-name"><i class="dot-l" style="background:#c7ccd3"></i> Belum Terukur</span>
+                <span class="bd-right"><b>14</b> —</span>
+              </div>
+              <div class="bar"><span style="width:16%;background:#c7ccd3"></span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- TABLE + ACTIVITY -->
+      <div class="bottom-2">
+        <section class="card">
+          <div class="panel-head" style="padding-bottom:12px">
+            <div>
+              <div class="t">Pemantauan Peserta</div>
+              <div class="d">Hasil pengukuran kunjungan terakhir</div>
+            </div>
+            <button class="btn ghost" style="padding:7px 13px;font-size:12.5px">Lihat semua</button>
+          </div>
+          <div class="tabs">
+            <button class="on">Semua <span class="count">86</span></button>
+            <button>Normal <span class="count">68</span></button>
+            <button>Perlu Perhatian <span class="count">14</span></button>
+            <button>Kritis <span class="count">4</span></button>
+            <button>Belum Hadir <span class="count">14</span></button>
+          </div>
+          <div class="table-scroll">
+<table>
+            <thead>
+              <tr><th>Nama Anak</th><th>Orang Tua</th><th>BB / TB</th><th>Status</th><th>Kunjungan</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="cust"><div class="avatar" style="width:36px;height:36px;background:#f0924c">AF</div><div><div class="nm">Aisyah Farida</div><div class="mt">24 bulan · P</div></div></div></td>
+                <td>Dewi Lestari</td>
+                <td class="measure"><b>11,2 kg</b> <span>/ 85 cm</span></td>
+                <td><span class="pill ok">Normal</span></td>
+                <td>24 Okt 2026</td>
+              </tr>
+              <tr>
+                <td><div class="cust"><div class="avatar" style="width:36px;height:36px;background:#3a6ff0">RA</div><div><div class="nm">Raka Aditya</div><div class="mt">18 bulan · L</div></div></div></td>
+                <td>Sinta Wulandari</td>
+                <td class="measure"><b>9,1 kg</b> <span>/ 78 cm</span></td>
+                <td><span class="pill warn">Perlu Perhatian</span></td>
+                <td>24 Okt 2026</td>
+              </tr>
+              <tr>
+                <td><div class="cust"><div class="avatar" style="width:36px;height:36px;background:#15a05a">BP</div><div><div class="nm">Bintang Pratama</div><div class="mt">30 bulan · L</div></div></div></td>
+                <td>Rina Marliana</td>
+                <td class="measure"><b>13,0 kg</b> <span>/ 92 cm</span></td>
+                <td><span class="pill ok">Normal</span></td>
+                <td>24 Okt 2026</td>
+              </tr>
+              <tr>
+                <td><div class="cust"><div class="avatar" style="width:36px;height:36px;background:#d64545">NK</div><div><div class="nm">Naura Khalila</div><div class="mt">15 bulan · P</div></div></div></td>
+                <td>Fitri Handayani</td>
+                <td class="measure"><b>7,4 kg</b> <span>/ 72 cm</span></td>
+                <td><span class="pill crit">Kritis</span></td>
+                <td>24 Okt 2026</td>
+              </tr>
+              <tr>
+                <td><div class="cust"><div class="avatar" style="width:36px;height:36px;background:#6c5ce7">GA</div><div><div class="nm">Gibran Arka</div><div class="mt">22 bulan · L</div></div></div></td>
+                <td>Lia Agustina</td>
+                <td class="measure"><b>—</b> <span>belum diukur</span></td>
+                <td><span class="pill absent">Belum Hadir</span></td>
+                <td>26 Agu 2026</td>
+              </tr>
+              <tr>
+                <td><div class="cust"><div class="avatar" style="width:36px;height:36px;background:#0f9d7a">ZM</div><div><div class="nm">Zahra Mikaila</div><div class="mt">27 bulan · P</div></div></div></td>
+                <td>Nurul Hidayah</td>
+                <td class="measure"><b>12,1 kg</b> <span>/ 88 cm</span></td>
+                <td><span class="pill ok">Normal</span></td>
+                <td>24 Okt 2026</td>
+              </tr>
+            </tbody>
+          </table>
+</div>
+          <div class="table-foot">
+            <span>Menampilkan 1–6 dari 86 peserta</span>
+            <div class="pager">
+              <button>‹</button>
+              <button class="on">1</button>
+              <button>2</button>
+              <button>3</button>
+              <button>›</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="panel-head" style="padding-bottom:10px">
+            <div><div class="t">Aktivitas Terbaru</div></div>
+          </div>
+          <div class="act">
+            <div class="act-item">
+              <span class="a-ic" style="background:var(--accent-weak);color:var(--accent-ink)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
+              <div><div class="a-txt">Pengukuran <b>Aisyah Farida</b> berhasil disimpan — status Normal.</div><div class="a-time">4 menit lalu</div></div>
+            </div>
+            <div class="act-item">
+              <span class="a-ic" style="background:var(--blue-bg);color:var(--blue)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span>
+              <div><div class="a-txt">Peserta baru <b>Gibran Arka</b> didaftarkan. Kode ID: <b>PK-0086</b>.</div><div class="a-time">1 jam lalu</div></div>
+            </div>
+            <div class="act-item">
+              <span class="a-ic" style="background:var(--amber-bg);color:var(--amber)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+              <div><div class="a-txt"><b>Naura Khalila</b> ditandai status <b>Kritis</b> — dianjurkan rujukan.</div><div class="a-time">1 jam lalu</div></div>
+            </div>
+            <div class="act-item">
+              <span class="a-ic" style="background:#eef0f3;color:var(--text-2)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3Z"/></svg></span>
+              <div><div class="a-txt">Pengumuman <b>jadwal imunisasi</b> terkirim ke 86 peserta.</div><div class="a-time">3 jam lalu</div></div>
+            </div>
+            <div class="act-item">
+              <span class="a-ic" style="background:var(--green-bg);color:var(--green)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+              <div><div class="a-txt">Jadwal Posyandu <b>November</b> disetel: 14 Nov 2026, 08.00 WIB.</div><div class="a-time">Kemarin</div></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>

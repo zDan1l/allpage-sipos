@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiPosya — Sistem Informasi Posyandu Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --surface:#ffffff;
+    --surface-2:#fafbfc;
+    --border:#ebedf0;
+    --border-strong:#e1e4e8;
+    --text:#14161a;
+    --text-2:#5b626e;
+    --text-3:#8a909c;
+    --accent:#0f9d7a;
+    --accent-weak:#e7f6f1;
+    --accent-ink:#0b7a5f;
+    --green:#15a05a;--green-bg:#e8f6ed;
+    --amber:#c77a16;--amber-bg:#fbf1e1;
+    --red:#d64545;--red-bg:#fbeaea;
+    --blue:#3a6ff0;--blue-bg:#eaf0fe;
+    --radius:16px;--radius-sm:10px;--radius-xs:8px;
+    --shadow-sm:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.05);
+    --shadow-md:0 4px 16px rgba(16,24,40,.06),0 12px 32px rgba(16,24,40,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    font-size:14px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:-.01em;
+  }
+  /* Nav */
+  .nav{
+    position:sticky;top:0;z-index:20;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);padding:0 24px;
+  }
+  .nav-inner{max-width:1200px;margin:0 auto;height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit}
+  .brand .logo{
+    width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(145deg,var(--accent),#0bbf90);
+    display:grid;place-items:center;color:#fff;font-weight:700;font-size:17px;box-shadow:0 4px 10px rgba(15,157,122,.28);
+  }
+  .brand .name{font-weight:700;font-size:16px;letter-spacing:-.02em}
+  .brand .sub{font-size:11.5px;color:var(--text-3);font-weight:450}
+  
+  .nav-menu{display:flex;align-items:center;gap:24px}
+  .nav-link{text-decoration:none;color:var(--text-2);font-weight:500;font-size:13.5px;transition:color .15s}
+  .nav-link:hover{color:var(--accent-ink)}
+  
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:var(--radius-sm);
+    font-weight:600;font-size:13px;cursor:pointer;border:1px solid transparent;text-decoration:none;white-space:nowrap;
+  }
+  .btn.primary{background:var(--accent);color:#fff;box-shadow:0 2px 6px rgba(15,157,122,.25)}
+  .btn.primary:hover{background:var(--accent-ink)}
+  .btn.ghost{background:var(--surface);border-color:var(--border-strong);color:var(--text)}
+  .btn.ghost:hover{background:var(--surface-2)}
+  .btn.lg{padding:13px 24px;font-size:15px;border-radius:12px}
+
+  /* Hero */
+  .hero{padding:70px 24px 60px;text-align:center;background:radial-gradient(circle at 50% 20%, rgba(15,157,122,.08) 0%, transparent 60%)}
+  .hero-inner{max-width:880px;margin:0 auto}
+  .badge-hero{
+    display:inline-flex;align-items:center;gap:8px;background:var(--accent-weak);color:var(--accent-ink);
+    padding:6px 14px;border-radius:999px;font-size:12.5px;font-weight:600;margin-bottom:20px;border:1px solid rgba(15,157,122,.2);
+  }
+  .hero h1{font-size:46px;font-weight:750;letter-spacing:-.035em;line-height:1.15;margin-bottom:18px}
+  .hero h1 span{background:linear-gradient(135deg,var(--accent),#0ba880);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p{font-size:17px;color:var(--text-2);line-height:1.6;margin-bottom:32px;max-width:700px;margin-left:auto;margin-right:auto}
+  .hero-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:48px}
+  
+  /* Stats row */
+  .stats-bar{
+    max-width:960px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:24px 32px;box-shadow:var(--shadow-sm);display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:left;
+  }
+  .stat-item .num{font-size:28px;font-weight:700;color:var(--text);letter-spacing:-.02em}
+  .stat-item .lbl{font-size:12.5px;color:var(--text-3);margin-top:2px}
+
+  /* Section Features */
+  .sec{padding:60px 24px;max-width:1200px;margin:0 auto}
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 40px}
+  .sec-head .tag{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:6px}
+  .sec-head h2{font-size:30px;font-weight:700;letter-spacing:-.025em;line-height:1.25}
+  .sec-head p{font-size:14.5px;color:var(--text-2);margin-top:8px}
+
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .f-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;
+    box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:14px;
+  }
+  .f-icon{
+    width:44px;height:44px;border-radius:12px;display:grid;place-items:center;margin-bottom:4px;
+  }
+  .f-title{font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .f-desc{font-size:13.5px;color:var(--text-2);line-height:1.55}
+
+  /* Banner Event */
+  .event-banner{
+    background:linear-gradient(135deg,#0a634e,#0f9d7a);color:#fff;border-radius:var(--radius);
+    padding:36px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;box-shadow:var(--shadow-md);margin-top:30px;flex-wrap:wrap;
+  }
+  .event-info h3{font-size:22px;font-weight:700;margin-bottom:6px}
+  .event-info p{font-size:14px;opacity:.9}
+  .event-meta{display:flex;gap:20px;margin-top:14px;font-size:13px;font-weight:500}
+  .event-meta span{display:inline-flex;align-items:center;gap:6px}
+
+  /* Disclaimer */
+  .disclaimer{
+    background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--amber);
+    border-radius:var(--radius-sm);padding:16px 20px;font-size:12.5px;color:var(--text-2);margin-top:50px;
+  }
+  .disclaimer b{color:var(--text)}
+
+  /* Footer */
+  .footer{background:var(--surface);border-top:1px solid var(--border);padding:40px 24px;margin-top:60px}
+  .footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;font-size:13px;color:var(--text-3)}
+  .footer-links{display:flex;gap:20px}
+  .footer-links a{color:var(--text-2);text-decoration:none;font-weight:500}
+  .footer-links a:hover{color:var(--accent)}
+
+  @media(max-width:600px){
+    .nav-inner{height:auto;padding:12px 0;flex-wrap:wrap;justify-content:center}
+  }
+  @media(max-width:860px){
+    .hero h1{font-size:34px}
+    .stats-bar{grid-template-columns:repeat(2,1fr)}
+    .grid-3{grid-template-columns:1fr}
+    .nav-menu{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="landing.html" class="brand">
+      <div class="logo">S</div>
+      <div>
+        <div class="name">SiPosya</div>
+        <div class="sub">Posyandu Kartini IV A</div>
+      </div>
+    </a>
+    <div class="nav-menu">
+      <a href="#fitur" class="nav-link">Fitur Utama</a>
+      <a href="#jadwal" class="nav-link">Jadwal Posyandu</a>
+      <a href="bantuan-faq.html" class="nav-link">Bantuan & FAQ</a>
+      <a href="../index.html" class="nav-link" style="color:var(--accent);font-weight:600">Daftar Semua Halaman</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <a href="login.html" class="btn ghost">Masuk</a>
+      <a href="register.html" class="btn primary">Daftar Peserta</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="badge-hero">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Sistem Informasi Posyandu Digital — Kelompok 12 TI-C1
+    </div>
+    <h1>Digitalisasi Pemantauan Tumbuh Kembang <span>Anak yang Lebih Baik</span></h1>
+    <p>
+      Menggantikan pencatatan manual Buku KIA fisik ke dalam sistem berbasis web terintegrasi. Pantau status pertumbuhan anak berdasarkan standar WHO, terima pengingat jadwal otomatis, dan akses data kesehatan kapan pun tanpa khawatir dokumen hilang.
+    </p>
+    <div class="hero-actions">
+      <a href="register.html" class="btn primary lg">
+        Daftar Akun Peserta
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="login.html" class="btn ghost lg">Masuk ke Sistem</a>
+      <a href="../kader/home.html" class="btn ghost lg" style="border-style:dashed;color:var(--accent-ink)">Lihat Demo Kader &rarr;</a>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="num">86</div>
+        <div class="lbl">Balita Terdaftar Aktif</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">83,7%</div>
+        <div class="lbl">Tingkat Kehadiran Rutin</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">100%</div>
+        <div class="lbl">Tersimpan Aman di Cloud</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">Standar WHO</div>
+        <div class="lbl">Permenkes No. 2/2020</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="sec" id="fitur">
+  <div class="sec-head">
+    <div class="tag">Solusi Terpadu</div>
+    <h2>Didesain untuk Kader & Orang Tua Balita</h2>
+    <p>Menjawab kendala pencatatan manual yang memakan waktu dan risiko hilangnya buku catatan fisik anak.</p>
+  </div>
+
+  <div class="grid-3">
+    <div class="f-card">
+      <div class="f-icon" style="background:var(--accent-weak);color:var(--accent-ink)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+      </div>
+      <div class="f-title">Grafik Pertumbuhan Standar WHO</div>
+      <div class="f-desc">Visualisasi kurva berat dan tinggi badan dilengkapi garis referensi WHO (-2 SD, Median, +2 SD) yang mudah dipahami orang tua secara naratif.</div>
+    </div>
+
+    <div class="f-card">
+      <div class="f-icon" style="background:var(--blue-bg);color:var(--blue)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      </div>
+      <div class="f-title">Pengingat Jadwal via WA & Web Push</div>
+      <div class="f-desc">Notifikasi bertingkat H-3, H-1, dan hari-H memastikan ibu dan bapak tidak terlewat sesi penimbangan rutin maupun jadwal vaksinasi dasar anak.</div>
+    </div>
+
+    <div class="f-card">
+      <div class="f-icon" style="background:var(--green-bg);color:var(--green)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+      </div>
+      <div class="f-title">Input Cepat & Minim Kesalahan</div>
+      <div class="f-desc">Form berbasis dropdown dan validasi otomatis memudahkan kader menginput data dalam waktu kurang dari 1 menit per balita.</div>
+    </div>
+  </div>
+
+  <!-- Event Banner -->
+  <div class="event-banner" id="jadwal">
+    <div class="event-info">
+      <h3>Kegiatan Posyandu Berikutnya</h3>
+      <p>Pelayanan penimbangan bulanan, pengukuran tinggi badan, dan pemberian Vitamin A.</p>
+      <div class="event-meta">
+        <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Sabtu, 14 November 2026</span>
+        <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 08.00 - 11.30 WIB</span>
+        <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Balai RW 04 Kartini</span>
+      </div>
+    </div>
+    <a href="login.html" class="btn ghost" style="color:var(--accent-ink);background:#fff">Periksa Riwayat Anak &rarr;</a>
+  </div>
+
+  <!-- Disclaimer box -->
+  <div class="disclaimer">
+    <b>Catatan Batasan Sistem (Ref: SRS Bagian 2.4):</b> Informasi pertumbuhan yang ditampilkan oleh sistem SiPosya bersifat indikatif dan edukatif berdasarkan pedoman standar antropometri anak, serta bukan merupakan pengganti pemeriksaan medis oleh dokter spesialis anak atau tenaga medis Puskesmas.
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <b>SiPosya v1.0</b> &mdash; Kelompok 12 TI-C1, D4 Teknik Informatika, Fakultas Vokasi, Universitas Airlangga (2026).
+    </div>
+    <div class="footer-links">
+      <a href="bantuan-faq.html">Bantuan</a>
+      <a href="login.html">Login Petugas</a>
+      <a href="../index.html">Daftar 33 Halaman</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

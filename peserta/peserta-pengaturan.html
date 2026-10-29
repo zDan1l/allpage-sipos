@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiPosya — Pengaturan Akun Peserta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --surface:#ffffff;
+    --surface-2:#fafbfc;
+    --border:#ebedf0;
+    --border-strong:#e1e4e8;
+    --text:#14161a;
+    --text-2:#5b626e;
+    --text-3:#8a909c;
+    --accent:#0f9d7a;
+    --accent-weak:#e7f6f1;
+    --accent-ink:#0b7a5f;
+    --green:#15a05a;--green-bg:#e8f6ed;
+    --amber:#c77a16;--amber-bg:#fbf1e1;
+    --red:#d64545;--red-bg:#fbeaea;
+    --blue:#3a6ff0;--blue-bg:#eaf0fe;
+    --radius:16px;--radius-sm:10px;--radius-xs:8px;
+    --shadow-sm:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.05);
+    --shadow-md:0 2px 6px rgba(16,24,40,.05),0 8px 24px rgba(16,24,40,.05);
+    --sidebar-w:260px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--text);font-size:14px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;letter-spacing:-.01em;
+  }
+  .app{display:flex;min-height:100vh}
+
+  /* SIDEBAR */
+  .sidebar{
+    width:var(--sidebar-w);flex-shrink:0;background:var(--surface);
+    border-right:1px solid var(--border);display:flex;flex-direction:column;
+    padding:18px 14px;position:sticky;top:0;height:100vh;
+  }
+  .brand{display:flex;align-items:center;gap:11px;padding:6px 8px 16px;text-decoration:none;color:inherit}
+  .brand .logo{
+    width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(145deg,var(--accent),#0bbf90);
+    display:grid;place-items:center;color:#fff;font-weight:700;font-size:17px;box-shadow:0 4px 10px rgba(15,157,122,.28);
+  }
+  .brand .name{font-weight:700;font-size:15.5px;letter-spacing:-.02em}
+  .brand .sub{font-size:11.5px;color:var(--text-3);font-weight:450}
+
+  .child-card{
+    background:var(--accent-weak);border:1px solid #c2ece0;border-radius:var(--radius-sm);
+    padding:12px;margin:8px 0 14px;display:flex;align-items:center;gap:10px;
+  }
+  .child-avatar{
+    width:38px;height:38px;border-radius:50%;background:#f0924c;color:#fff;
+    display:grid;place-items:center;font-weight:700;font-size:14px;flex-shrink:0;
+  }
+  .child-name{font-weight:700;font-size:13px;color:var(--accent-ink)}
+  .child-meta{font-size:11px;color:var(--text-2)}
+
+  .nav-group{margin-top:8px}
+  .nav-label{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);padding:6px 10px 7px}
+  .nav-item{
+    display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:var(--radius-sm);
+    color:var(--text-2);font-weight:500;font-size:13.5px;cursor:pointer;margin-bottom:2px;text-decoration:none;
+  }
+  .nav-item:hover{background:var(--surface-2);color:var(--text)}
+  .nav-item.active{background:var(--accent-weak);color:var(--accent-ink);font-weight:600}
+  .nav-item .ico{width:18px;height:18px;flex-shrink:0}
+  .nav-item .badge{margin-left:auto;font-size:11px;font-weight:600;background:#eef0f3;color:var(--text-2);padding:1px 8px;border-radius:999px}
+
+  .side-foot{margin-top:auto;display:flex;flex-direction:column;gap:12px}
+  .profile{display:flex;align-items:center;gap:10px;padding:8px 6px;border-top:1px solid var(--border)}
+  .avatar{width:34px;height:34px;border-radius:50%;background:#3a6ff0;color:#fff;display:grid;place-items:center;font-weight:600;font-size:13px;flex-shrink:0}
+
+  /* MAIN */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{
+    height:62px;flex-shrink:0;display:flex;align-items:center;gap:16px;padding:0 26px;
+    border-bottom:1px solid var(--border);background:rgba(255,255,255,.75);backdrop-filter:blur(8px);
+    position:sticky;top:0;z-index:10;
+  }
+  .crumb{font-size:13.5px;color:var(--text-3);font-weight:500}
+  .crumb b{color:var(--text);font-weight:600}
+  
+  .content{padding:24px 26px 40px;max-width:860px;width:100%;margin:0 auto}
+
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+  .page-head h1{font-size:23px;font-weight:700;letter-spacing:-.03em}
+  .page-head .p-sub{font-size:13.5px;color:var(--text-2);margin-top:3px}
+
+  .section-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:24px;box-shadow:var(--shadow-sm);margin-bottom:20px;
+  }
+  .s-title{font-size:16px;font-weight:700;margin-bottom:4px}
+  .s-desc{font-size:12.5px;color:var(--text-3);margin-bottom:18px}
+
+  .form-group{margin-bottom:16px}
+  .form-label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--text)}
+  .input-ctrl{
+    width:100%;background:var(--surface-2);border:1px solid var(--border-strong);
+    border-radius:var(--radius-sm);padding:9px 13px;font:inherit;font-size:13.5px;color:var(--text);outline:none;
+  }
+  .input-ctrl:focus{border-color:var(--accent);background:#fff}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+  /* Child item list (RIWAYAT-008) */
+  .child-item{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;background:var(--surface-2);
+  }
+  .child-item.active{background:#f0faf6;border-color:#b8e8db}
+  .child-left{display:flex;align-items:center;gap:10px}
+  .badge-active{font-size:11px;font-weight:600;background:var(--accent);color:#fff;padding:2px 8px;border-radius:999px}
+
+  /* Toggle row */
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+  .toggle-row:last-child{border-bottom:none}
+  .toggle-info .t-h{font-size:13px;font-weight:600}
+  .toggle-info .t-d{font-size:12px;color:var(--text-3);margin-top:2px}
+  
+  .switch{width:40px;height:22px;border-radius:999px;background:var(--accent);position:relative;flex-shrink:0;cursor:pointer}
+  .switch::after{content:"";position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:var(--shadow-sm)}
+  .switch.off{background:#d1d5db}
+  .switch.off::after{right:auto;left:2px}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 16px;
+    border-radius:var(--radius-sm);font-weight:600;font-size:13px;cursor:pointer;border:1px solid transparent;text-decoration:none;
+  }
+  .btn.primary{background:var(--accent);color:#fff;box-shadow:0 2px 6px rgba(15,157,122,.25)}
+  .btn.ghost{background:var(--surface);border-color:var(--border-strong);color:var(--text)}
+  .btn.danger{background:var(--red-bg);border-color:#f8caca;color:var(--red)}
+
+  @media(max-width:860px){
+    .sidebar{display:none}
+    .grid-2{grid-template-columns:1fr}
+  }
+
+  /* ===== NAVIGASI MOBILE (CSS-only) ===== */
+  .nav-toggle{display:none}
+  .menu-btn{
+    display:none;width:38px;height:38px;flex-shrink:0;place-items:center;
+    border-radius:var(--radius-sm);border:1px solid var(--border);
+    background:var(--surface);color:var(--text-2);cursor:pointer;
+  }
+  .menu-btn:hover{background:var(--surface-2)}
+  .nav-backdrop{display:none}
+  @media(max-width:860px){
+    .sidebar{
+      display:flex;position:fixed;left:0;top:0;bottom:0;z-index:120;height:100vh;
+      transform:translateX(-100%);transition:transform .2s ease;
+      box-shadow:0 10px 40px rgba(16,24,40,.18);overflow-y:auto;
+    }
+    .nav-toggle:checked ~ .sidebar{transform:translateX(0)}
+    .nav-toggle:checked ~ .nav-backdrop{
+      display:block;position:fixed;inset:0;z-index:110;background:rgba(16,24,40,.35);
+    }
+    .menu-btn{display:grid}
+    .crumb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  }
+  @media(max-width:600px){
+    .topbar{gap:10px}
+    .topbar .search{display:none}
+    .topbar .btn.ghost{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true">
+
+  <!-- SIDEBAR PESERTA -->
+  <aside class="sidebar">
+    <a href="../umum/landing.html" class="brand">
+      <div class="logo">S</div>
+      <div>
+        <div class="name">SiPosya</div>
+        <div class="sub">Area Orang Tua / Peserta</div>
+      </div>
+    </a>
+
+    <div class="child-card">
+      <div class="child-avatar">AF</div>
+      <div style="flex:1;min-width:0">
+        <div class="child-name">Aisyah Farida</div>
+        <div class="child-meta">24 Bulan &middot; ID: PK-0021</div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Menu Anak</div>
+      <a href="peserta-dashboard.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Beranda Anak
+      </a>
+      <a href="peserta-riwayat.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+        Riwayat Kesehatan
+      </a>
+      <a href="peserta-imunisasi.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Jadwal Imunisasi
+      </a>
+      <a href="peserta-grafik.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+        Grafik Pertumbuhan
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Jadwal & Info</div>
+      <a href="peserta-jadwal.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Jadwal & Kalender
+      </a>
+      <a href="peserta-notifikasi.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        Notifikasi <span class="badge">2</span>
+      </a>
+      <a href="peserta-pengaturan.html" class="nav-item active">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1 2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        Pengaturan
+      </a>
+    </div>
+
+    <div class="side-foot">
+      <div class="profile">
+        <div class="avatar">DL</div>
+        <div>
+          <div style="font-weight:600;font-size:13px">Dewi Lestari</div>
+          <div style="font-size:11.5px;color:var(--text-3)">Orang Tua / Wali</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <label class="nav-backdrop" for="nav-toggle" aria-label="Tutup menu"></label>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <label class="menu-btn" for="nav-toggle" aria-label="Buka menu navigasi">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </label>
+      
+      <div class="crumb">Posyandu Kartini IV A &nbsp;&middot;&nbsp; <b>Pengaturan Akun Peserta</b></div>
+    </header>
+
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <h1>Pengaturan Akun & Preferensi</h1>
+          <div class="p-sub">Kelola identitas orang tua, data anak terdaftar, notifikasi, dan keamanan login</div>
+        </div>
+      </div>
+
+      <!-- PROFIL ORANG TUA -->
+      <section class="section-card">
+        <div class="s-title">Profil Orang Tua / Wali</div>
+        <div class="s-desc">Informasi kontak utama Anda yang terdaftar pada sistem Posyandu Kartini IV A.</div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" class="input-ctrl" value="Dewi Lestari">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nomor WhatsApp Aktif</label>
+            <input type="tel" class="input-ctrl" value="081234567890">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Alamat Domisili</label>
+          <input type="text" class="input-ctrl" value="Jl. Kartini Gang 4 No. 12, RT 02 / RW 04">
+        </div>
+
+        <button class="btn primary">Simpan Perubahan Profil</button>
+      </section>
+
+      <!-- KELOLA ANAK TERDAFTAR (RIWAYAT-008) -->
+      <section class="section-card">
+        <div class="s-title">Kelola Balita Terdaftar (Multi-Anak)</div>
+        <div class="s-desc">Satu akun peserta dapat mengelola riwayat lebih dari satu anak (Ref: <code>RIWAYAT-008</code>).</div>
+
+        <div class="child-item active">
+          <div class="child-left">
+            <div class="child-avatar" style="width:34px;height:34px;font-size:12px">AF</div>
+            <div>
+              <div style="font-weight:600;font-size:13px">Aisyah Farida (24 bulan)</div>
+              <div style="font-size:11.5px;color:var(--text-3)">Kode ID: PK-0021 &middot; TTL: 12 Okt 2024</div>
+            </div>
+          </div>
+          <span class="badge-active">Sedang Aktif</span>
+        </div>
+
+        <div class="child-item">
+          <div class="child-left">
+            <div class="child-avatar" style="width:34px;height:34px;font-size:12px;background:#3a6ff0">BP</div>
+            <div>
+              <div style="font-weight:600;font-size:13px">Bintang Pratama (6 bulan)</div>
+              <div style="font-size:11.5px;color:var(--text-3)">Kode ID: PK-0084 &middot; TTL: 15 Apr 2026</div>
+            </div>
+          </div>
+          <button class="btn ghost" style="padding:5px 10px;font-size:11.5px">Jadikan Aktif</button>
+        </div>
+
+        <div style="margin-top:14px;display:flex;gap:10px">
+          <input type="text" class="input-ctrl" placeholder="Masukkan Kode ID Balita Baru (dari Kader)" style="max-width:320px">
+          <button class="btn ghost">+ Tambah Balita</button>
+        </div>
+      </section>
+
+      <!-- PREFERENSI NOTIFIKASI (NOTIF-004) -->
+      <section class="section-card">
+        <div class="s-title">Preferensi Notifikasi</div>
+        <div class="s-desc">Atur saluran pengingat jadwal kunjungan dan imunisasi (Ref: <code>NOTIF-004</code>).</div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="t-h">Notifikasi Web Push Peramban</div>
+            <div class="t-d">Pemberitahuan pop-up langsung di layar ponsel atau browser Anda</div>
+          </div>
+          <span class="switch"></span>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="t-h">Pesan WhatsApp Otomatis (Jalur Cadangan)</div>
+            <div class="t-d">Pesan WA jika push notification belum dibuka dalam 2 jam (H-3, H-1, Hari-H 07.00 WIB)</div>
+          </div>
+          <span class="switch"></span>
+        </div>
+      </section>
+
+      <!-- KEAMANAN & PANDUAN -->
+      <section class="section-card">
+        <div class="s-title">Keamanan & Panduan Pengguna</div>
+        <div class="s-desc">Pilihan tutorial aplikasi dan pengaturan kata sandi.</div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px">
+          <div>
+            <div style="font-weight:600;font-size:13px">Buka Ulang Panduan Onboarding</div>
+            <div style="font-size:12px;color:var(--text-3)">Lihat kembali penjelasan cara membaca kurva KMS dan notifikasi</div>
+          </div>
+          <a href="../umum/onboarding.html" class="btn ghost">Buka Tutorial</a>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0 0;flex-wrap:wrap;gap:10px">
+          <div>
+            <div style="font-weight:600;font-size:13px">Keluar dari Sesi (Logout)</div>
+            <div style="font-size:12px;color:var(--text-3)">Sesi otomatis kedaluwarsa setelah 30 menit tidak aktif (Ref: <code>AUTH-005</code>)</div>
+          </div>
+          <a href="../umum/login.html" class="btn danger">Keluar dari Akun</a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+</div>
+
+</body>
+</html>
