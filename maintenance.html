@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pemeliharaan Sistem &middot; SiPosya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --surface:#ffffff;
+    --surface-2:#fafbfc;
+    --border:#ebedf0;
+    --border-strong:#e1e4e8;
+    --text:#14161a;
+    --text-2:#5b626e;
+    --text-3:#8a909c;
+    --accent:#0f9d7a;
+    --accent-weak:#e7f6f1;
+    --accent-ink:#0b7a5f;
+    --green:#15a05a;--green-bg:#e8f6ed;
+    --amber:#c77a16;--amber-bg:#fbf1e1;
+    --red:#d64545;--red-bg:#fbeaea;
+    --blue:#3a6ff0;--blue-bg:#eaf0fe;
+    --radius:16px;--radius-sm:10px;--radius-xs:8px;
+    --shadow-sm:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.05);
+    --shadow-md:0 4px 16px rgba(16,24,40,.06),0 12px 32px rgba(16,24,40,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;letter-spacing:-.01em;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  .top-strip{
+    padding:16px 24px;display:flex;align-items:center;justify-content:space-between;
+    gap:16px;border-bottom:1px solid var(--border);background:#fff;
+  }
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit}
+  .brand .logo{
+    width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(145deg,var(--accent),#0bbf90);
+    display:grid;place-items:center;color:#fff;font-weight:700;font-size:16px;box-shadow:0 4px 10px rgba(15,157,122,.28);
+  }
+  .brand .name{font-weight:700;font-size:15px;letter-spacing:-.02em}
+  .brand .sub{font-size:11px;color:var(--text-3)}
+  .top-right{display:flex;align-items:center;gap:12px}
+  .status-chip{
+    display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;
+    color:var(--amber);background:var(--amber-bg);border:1px solid #f3e0c4;
+    padding:5px 11px;border-radius:999px;
+  }
+  .status-chip .dot{
+    width:7px;height:7px;border-radius:50%;background:var(--amber);
+    box-shadow:0 0 0 3px rgba(199,122,22,.15);
+  }
+  .back-link{font-size:12.5px;color:var(--text-2);text-decoration:none;font-weight:500}
+  .back-link:hover{color:var(--accent-ink)}
+
+  .center-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+  .card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:40px 36px;max-width:600px;width:100%;text-align:center;box-shadow:var(--shadow-md);
+  }
+  .icon-badge{
+    width:64px;height:64px;border-radius:18px;margin:0 auto 18px;display:grid;place-items:center;
+    background:var(--blue-bg);color:var(--blue);border:1px solid #d6e2fd;
+  }
+  .icon-badge svg{animation:none}
+  h1{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+  .lead{font-size:14px;color:var(--text-2);line-height:1.65;margin-bottom:24px;max-width:450px;margin-left:auto;margin-right:auto}
+
+  .window{
+    text-align:left;background:var(--surface-2);border:1px solid var(--border);
+    border-radius:var(--radius-sm);padding:18px 20px;margin-bottom:18px;
+  }
+  .window .w-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+  .window .w-title{font-size:12.5px;font-weight:600;color:var(--text)}
+  .window .w-time{font-size:12px;font-weight:600;color:var(--text-2);font-variant-numeric:tabular-nums}
+  .bar{height:8px;border-radius:999px;background:#eceef1;overflow:hidden;margin-bottom:10px}
+  .bar > span{
+    display:block;height:100%;border-radius:999px;
+    background:linear-gradient(90deg,var(--blue),#6b93f5);
+  }
+  .w-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:var(--text-3)}
+  .w-meta b{color:var(--text);font-weight:600}
+
+  .grid-info{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+  .info{
+    text-align:left;border:1px solid var(--border);border-radius:var(--radius-sm);
+    padding:13px 15px;background:#fff;
+  }
+  .info .i-label{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
+  .info .i-val{font-size:13px;font-weight:600;color:var(--text)}
+  .info .i-sub{font-size:11.5px;color:var(--text-3);margin-top:2px}
+
+  .note{
+    display:flex;gap:10px;text-align:left;background:var(--accent-weak);border:1px solid #d3ece3;
+    border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:24px;
+  }
+  .note svg{flex-shrink:0;color:var(--accent-ink);margin-top:1px}
+  .note p{font-size:12.5px;color:var(--accent-ink);line-height:1.5}
+
+  .btn-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;
+    border-radius:var(--radius-sm);font-weight:600;font-size:13px;cursor:pointer;
+    border:1px solid transparent;text-decoration:none;min-height:44px;
+  }
+  .btn.primary{background:var(--accent);color:#fff;box-shadow:0 2px 6px rgba(15,157,122,.25)}
+  .btn.primary:hover{background:var(--accent-ink)}
+  .btn.ghost{background:var(--surface);border-color:var(--border-strong);color:var(--text)}
+  .btn.ghost:hover{background:var(--surface-2)}
+
+  .help-foot{margin-top:22px;font-size:12px;color:var(--text-3)}
+  .help-foot a{color:var(--accent-ink);font-weight:600;text-decoration:none}
+
+  @media(max-width:560px){
+    .card{padding:32px 22px}
+    .grid-info{grid-template-columns:1fr}
+    .status-chip{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="top-strip">
+  <a href="landing.html" class="brand">
+    <div class="logo">S</div>
+    <div>
+      <div class="name">SiPosya</div>
+      <div class="sub">Posyandu Kartini IV A</div>
+    </div>
+  </a>
+  <div class="top-right">
+    <span class="status-chip"><span class="dot"></span> Pemeliharaan Terjadwal</span>
+    <a href="index.html" class="back-link">&larr; Daftar 33 Halaman</a>
+  </div>
+</header>
+
+<div class="center-wrap">
+  <div class="card">
+    <div class="icon-badge">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14.7 6.3a4 4 0 0 0 5 5l-9.4 9.4a2.1 2.1 0 0 1-3-3l9.4-9.4Z"/>
+        <path d="M6.3 3.7 4.5 5.5l1.4 1.4L4.5 8.3 6.3 10l1.4-1.4 1.4 1.4 1.8-1.8-1.4-1.4 1.4-1.4L9.1 3.7 7.7 5.1Z"/>
+      </svg>
+    </div>
+    <h1>Sistem Sedang Dalam Pemeliharaan</h1>
+    <p class="lead">
+      Kami sedang melakukan pemeliharaan rutin untuk menjaga keamanan dan kestabilan layanan.
+      SiPosya akan tersedia kembali dalam waktu singkat.
+    </p>
+
+    <div class="window">
+      <div class="w-top">
+        <span class="w-title">Progres pemeliharaan</span>
+        <span class="w-time">22.00 &ndash; 05.00 WIB</span>
+      </div>
+      <div class="bar"><span style="width:68%"></span></div>
+      <div class="w-meta">
+        <span>Perkiraan selesai <b>pukul 05.00 WIB</b></span>
+        <span><b>68%</b> selesai</span>
+      </div>
+    </div>
+
+    <div class="grid-info">
+      <div class="info">
+        <div class="i-label">Jadwal</div>
+        <div class="i-val">Malam ini</div>
+        <div class="i-sub">29 Oktober 2026</div>
+      </div>
+      <div class="info">
+        <div class="i-label">Durasi</div>
+        <div class="i-val">&plusmn; 7 jam</div>
+        <div class="i-sub">Di luar jam operasional</div>
+      </div>
+      <div class="info">
+        <div class="i-label">Dampak</div>
+        <div class="i-val">Akses sementara ditutup</div>
+        <div class="i-sub">Data tetap aman tersimpan</div>
+      </div>
+      <div class="info">
+        <div class="i-label">Pemberitahuan</div>
+        <div class="i-val">H-1 via WhatsApp</div>
+        <div class="i-sub">Sesuai prosedur AVAIL-002</div>
+      </div>
+    </div>
+
+    <div class="note">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+      <p>Seluruh data peserta dan riwayat pengukuran tetap tersimpan dengan aman selama pemeliharaan berlangsung.</p>
+    </div>
+
+    <div class="btn-row">
+      <a href="bantuan-faq.html" class="btn ghost">Hubungi Kader</a>
+      <a href="landing.html" class="btn primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+        Coba Lagi
+      </a>
+    </div>
+
+    <div class="help-foot">
+      Pemeliharaan dijadwalkan pukul 22.00&ndash;05.00 WIB sesuai standar <a href="index.html">AVAIL-002</a>.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

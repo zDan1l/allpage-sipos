@@ -91,8 +91,10 @@
   }
   .select-ctrl{
     background:var(--surface-2);border:1px solid var(--border-strong);border-radius:var(--radius-xs);
-    padding:8px 12px;font:inherit;font-size:13px;color:var(--text);outline:none;
+    padding:8px 12px;font:inherit;font-size:13px;color:var(--text);outline:none;max-width:100%;
   }
+  .action-bar > div{min-width:0}
+  .grid-2 > *{min-width:0}
 
   /* KPI Summary */
   .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
@@ -132,11 +134,45 @@
   @media(max-width:860px){
     .sidebar{display:none}
   }
+
+  /* ===== TABEL RESPONSIF ===== */
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .table-scroll table{min-width:560px}
+
+  /* ===== NAVIGASI MOBILE (CSS-only) ===== */
+  .nav-toggle{display:none}
+  .menu-btn{
+    display:none;width:38px;height:38px;flex-shrink:0;place-items:center;
+    border-radius:var(--radius-sm);border:1px solid var(--border);
+    background:var(--surface);color:var(--text-2);cursor:pointer;
+  }
+  .menu-btn:hover{background:var(--surface-2)}
+  .nav-backdrop{display:none}
+  @media(max-width:860px){
+    .sidebar{
+      display:flex;position:fixed;left:0;top:0;bottom:0;z-index:120;height:100vh;
+      transform:translateX(-100%);transition:transform .2s ease;
+      box-shadow:0 10px 40px rgba(16,24,40,.18);overflow-y:auto;
+    }
+    .nav-toggle:checked ~ .sidebar{transform:translateX(0)}
+    .nav-toggle:checked ~ .nav-backdrop{
+      display:block;position:fixed;inset:0;z-index:110;background:rgba(16,24,40,.35);
+    }
+    .menu-btn{display:grid}
+    .crumb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  }
+  @media(max-width:600px){
+    .topbar{gap:10px}
+    .topbar .search{display:none}
+    .topbar .btn.ghost{display:none}
+  }
 </style>
 </head>
 <body>
 
 <div class="app">
+
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true">
 
   <!-- SIDEBAR KADER -->
   <aside class="sidebar">
@@ -207,9 +243,15 @@
     </div>
   </aside>
 
+  <label class="nav-backdrop" for="nav-toggle" aria-label="Tutup menu"></label>
+
   <!-- MAIN -->
   <div class="main">
     <header class="topbar">
+      <label class="menu-btn" for="nav-toggle" aria-label="Buka menu navigasi">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </label>
+      
       <div class="crumb">Posyandu Kartini IV A &nbsp;&middot;&nbsp; <b>Rekap & Laporan Bulanan Puskesmas</b></div>
     </header>
 
@@ -234,7 +276,7 @@
           </select>
         </div>
 
-        <div style="display:flex;gap:10px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn excel">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
             Unduh Excel (.xlsx)
@@ -301,7 +343,8 @@
         <!-- FORMULIR REKAP KELOMPOK USIA PUSKESMAS -->
         <div class="card">
           <div class="sec-h">Rekapitulasi Berdasarkan Kelompok Usia</div>
-          <table>
+          <div class="table-scroll">
+<table>
             <thead>
               <tr>
                 <th>Kelompok Usia</th>
@@ -349,6 +392,7 @@
               </tr>
             </tbody>
           </table>
+</div>
         </div>
 
       </div>
