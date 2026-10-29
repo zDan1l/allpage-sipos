@@ -1,0 +1,322 @@
+# Daftar Halaman (Page List) — SiPosya
+### Sistem Informasi Posyandu Digital — Kelompok 12 TI-C1
+
+> Dokumen ini menguraikan seluruh halaman yang akan ada pada sistem SiPosya beserta konten/komponen di dalamnya, disusun berdasarkan **SRS SiPosya v1.0 (Oktober 2026)**.
+> Setiap halaman dipetakan ke kode kebutuhan fungsional (mis. `AUTH-001`, `KADER-007`) agar dapat ditelusuri balik ke SRS.
+
+---
+
+## Keterangan & Konvensi
+
+- **Peran pengguna:** Administrator (Admin), Kader Posyandu (Kader), Peserta (orang tua/wali balita).
+- **Label fase:**
+  - 🟢 **MVP** — Rilis pertama.
+  - 🔵 **Iterasi 2** — Pengembangan lanjutan (Kehadiran & Laporan).
+- **Desain umum (berlaku di semua halaman):** mobile-first responsive, Bahasa Indonesia, navigasi *sidebar* di desktop & *hamburger menu* di seluler, tombol/elemen interaktif min. 44×44px, *loading state* saat menyimpan, validasi *real-time*, placeholder informatif. (Ref: `USE-001` s/d `USE-005`, bagian 5.1 SRS)
+- **Keamanan lintas halaman:** HTTPS/TLS, sesi JWT, Role-Based Access Control (peserta tidak bisa melihat data peserta lain), auto-logout 30 menit idle. (Ref: `SEC-001` s/d `SEC-007`, `AUTH-005`)
+
+### Peta Halaman Ringkas
+
+| Kelompok | Jumlah Halaman | Peran |
+|---|---|---|
+| A. Umum / Publik & Autentikasi | 6 | Semua |
+| B. Area Peserta | 8 | Peserta |
+| C. Area Kader | 10 | Kader |
+| D. Area Administrator | 5 | Admin |
+| E. Halaman Sistem (utilitas) | 4 | Semua |
+| **Total** | **33** | |
+
+---
+
+# A. HALAMAN UMUM / PUBLIK & AUTENTIKASI
+*Dapat diakses sebelum login. (Ref: Modul Autentikasi — AUTH)*
+
+## A1. Landing Page / Halaman Awal 🟢
+Halaman pembuka saat pertama membuka aplikasi.
+**Konten:**
+- Logo & nama "SiPosya — Sistem Informasi Posyandu Digital".
+- Tagline singkat dan ilustrasi/ringkasan manfaat sistem.
+- Tombol **Masuk (Login)** dan **Daftar Akun** (untuk peserta).
+- Tautan singkat: tentang Posyandu Kartini IV A, kontak/bantuan.
+- Catatan: informasi bersifat indikatif, bukan pengganti konsultasi medis (batasan sistem 2.4).
+
+## A2. Halaman Login 🟢
+*(Ref: `AUTH-002`, `AUTH-003`, `SEC-002`, `SEC-007`)*
+**Konten:**
+- Field **Nomor WhatsApp** dan **Kata Sandi** (dengan ikon tampil/sembunyikan).
+- Tombol **Masuk**.
+- Tautan **Lupa Kata Sandi?**.
+- Tautan **Belum punya akun? Daftar** (khusus peserta).
+- Validasi real-time + pesan error berbahasa Indonesia yang jelas.
+- Mekanisme kunci sementara 15 menit setelah 5 kali gagal (`SEC-007`).
+- **Logika pengalihan:** setelah login, sistem mengarahkan ke dashboard sesuai peran (Admin / Kader / Peserta).
+
+## A3. Halaman Registrasi Peserta 🟢
+*(Ref: `AUTH-001`, `KADER-002`)*
+**Konten:**
+- Field: **Nama Lengkap**, **Nomor WhatsApp**, **Kata Sandi** + **Konfirmasi Kata Sandi**, **Kode ID Anak** (ID unik yang sebelumnya dibuat kader).
+- Penjelasan cara memperoleh Kode ID Anak (diberikan oleh kader saat pendaftaran balita).
+- Validasi: nomor WA unik, kekuatan kata sandi, kecocokan Kode ID dengan data anak di sistem.
+- Tombol **Daftar** → sukses → menghubungkan akun ke data anak → lanjut ke onboarding.
+- Catatan: **akun kader tidak dibuat di sini** (hanya oleh admin — `AUTH-006`).
+
+## A4. Halaman Lupa Kata Sandi 🟢
+*(Ref: `AUTH-004`)*
+**Konten:**
+- Field **Nomor WhatsApp terdaftar**.
+- Tombol **Kirim Kode Verifikasi** → kode OTP dikirim via WhatsApp.
+- Field input **Kode Verifikasi (OTP)**.
+- Form **Kata Sandi Baru** + konfirmasi.
+- Status/pesan: kode terkirim, kode salah/kedaluwarsa, berhasil diubah.
+
+## A5. Halaman Onboarding / Tutorial Sekali Pakai 🟢
+*(Ref: bagian 5.1 SRS — onboarding singkat)*
+**Konten:**
+- 3–4 slide tutorial singkat sesuai peran (cara input data untuk kader / cara baca grafik & riwayat untuk peserta).
+- Indikator langkah + tombol **Lewati** dan **Selanjutnya / Mulai**.
+- Hanya tampil sekali untuk pengguna baru (bisa dibuka lagi dari Pengaturan).
+
+## A6. Halaman Bantuan / FAQ 🟢
+**Konten:**
+- Pertanyaan umum (cara dapat Kode ID, cara aktifkan notifikasi, lupa kata sandi).
+- Kontak kader/pengurus Posyandu.
+- Penjelasan status pertumbuhan (Normal / Perlu Perhatian / Kritis) secara awam.
+
+---
+
+# B. AREA PESERTA (Orang Tua/Wali)
+*Akses terbatas pada data anak sendiri. (Ref: Modul Riwayat I-1, Grafik I-3, Notifikasi I-2)*
+
+## B1. Beranda / Dashboard Peserta 🟢
+*(Ref: `RIWAYAT-005`, `RIWAYAT-007`, `GRAFIK-005`)*
+**Konten:**
+- Sapaan + nama anak aktif; bila lebih dari satu anak, ada **pemilih anak** (lihat B8).
+- **Kartu Ringkasan Kondisi Terkini:** berat badan terakhir, tinggi badan terakhir, tanggal kunjungan terakhir.
+- **Label status pertumbuhan** (Normal / Perlu Perhatian / Kritis) berwarna.
+- **Kartu status pertumbuhan naratif** (mis. "Berat badan dalam batas normal").
+- **Pengingat jadwal terdekat** (kunjungan Posyandu / imunisasi berikutnya).
+- Pintasan ke: Riwayat Lengkap, Grafik Pertumbuhan, Jadwal.
+
+## B2. Riwayat Kesehatan Anak 🟢
+*(Ref: `RIWAYAT-001`, `RIWAYAT-003`, `RIWAYAT-006`, `RIWAYAT-007`)*
+**Konten:**
+- Daftar seluruh kunjungan diurutkan dari **terbaru → terlama**.
+- Tiap entri: tanggal kunjungan, berat badan, tinggi/panjang badan, lingkar kepala, label status.
+- **Filter rentang waktu** (bulan/tahun).
+- Tap entri → membuka **Detail Kunjungan** (B3).
+- Catatan data tersimpan di cloud, tetap aman meski Buku KIA fisik hilang.
+
+## B3. Detail Kunjungan 🟢
+*(Ref: `RIWAYAT-001`, `RIWAYAT-002`, `RIWAYAT-004`, `RIWAYAT-007`)*
+**Konten:**
+- Detail pengukuran lengkap pada tanggal tersebut (berat, tinggi, lingkar kepala).
+- **Catatan kader** untuk kunjungan itu (bila ada).
+- **Status imunisasi** yang diberikan pada kunjungan tersebut.
+- Label status pertumbuhan pada kunjungan itu.
+
+## B4. Riwayat & Jadwal Imunisasi 🟢
+*(Ref: `RIWAYAT-002`, `NOTIF-003`)*
+**Konten:**
+- Daftar lengkap imunisasi: jenis vaksin, tanggal pemberian, **status (Sudah / Belum / Terjadwal)**.
+- Penanda jelas vaksin yang akan datang beserta tanggalnya.
+- Keterangan singkat tiap jenis vaksin (awam).
+
+## B5. Grafik Pertumbuhan 🟢
+*(Ref: `GRAFIK-001` s/d `GRAFIK-006`)*
+**Konten:**
+- Tab/toggle: **Grafik Berat Badan** & **Grafik Tinggi Badan** (dan BMI bila tersedia).
+- Grafik garis perkembangan anak dengan **garis referensi WHO** (Median, −2 SD, +2 SD) berbeda warna.
+- **Tooltip per titik** saat diklik/disentuh: tanggal, nilai, status.
+- Legenda jelas + keterangan sumbu (X: Bulan/Tahun, Y: nilai + satuan).
+- Responsif seluler: pinch-to-zoom / geser horizontal.
+- Kartu status pertumbuhan ringkas di bawah grafik.
+
+## B6. Jadwal & Kalender Kegiatan 🟢
+*(Ref: `KADER-016` tampil ke peserta, `NOTIF-001`, `NOTIF-003`)*
+**Konten:**
+- Kalender menampilkan jadwal Posyandu bulanan & jadwal imunisasi anak dalam satu tampilan.
+- Detail jadwal terdekat (tanggal, waktu, lokasi).
+- Penanda jenis kegiatan (penimbangan / imunisasi).
+
+## B7. Notifikasi & Pengumuman 🟢
+*(Ref: `NOTIF-001` s/d `NOTIF-005`, `NOTIF-007`)*
+**Konten:**
+- Daftar notifikasi masuk: pengingat H-3 / H-1 / hari-H, pengingat imunisasi, pengumuman dari kader.
+- Penanda sudah/belum dibaca.
+- Isi pesan dalam Bahasa Indonesia sederhana.
+
+## B8. Pengaturan Akun Peserta 🟢
+*(Ref: `NOTIF-004`, `RIWAYAT-008`, `AUTH-005`)*
+**Konten:**
+- Edit profil orang tua/wali (nama, nomor WhatsApp).
+- **Kelola daftar anak** (bila satu akun mengelola >1 balita) + ganti anak aktif.
+- **Toggle aktif/nonaktif notifikasi web push**.
+- Ganti kata sandi.
+- Buka ulang onboarding/tutorial.
+- Tombol **Keluar (Logout)**.
+
+---
+
+# C. AREA KADER
+*Enabler utama sistem; seluruh data bersumber dari sini. (Ref: Modul I-4 — KADER)*
+
+## C1. Dashboard Kader 🟢
+*(Ref: `KADER-005`, `KADER-016`, `GRAFIK-007`)*
+**Konten:**
+- Ringkasan statistik hari ini: jumlah peserta terdaftar, kegiatan terdekat, peserta hadir/absen (bila modul kehadiran aktif).
+- Pintasan aksi cepat: **Input Pengukuran**, **Tambah Peserta**, **Kirim Pengumuman**.
+- Daftar peserta dengan **status kehadiran terakhir**.
+- Jadwal kegiatan terdekat.
+- (🔵 Iterasi 2) Kartu peringatan peserta absen 2 bulan berturut-turut.
+
+## C2. Daftar Peserta 🟢
+*(Ref: `KADER-003`, `KADER-005`, `KADER-006`)*
+**Konten:**
+- Tabel/daftar seluruh peserta: nama anak, nama orang tua, kode ID, usia, status kehadiran terakhir.
+- **Pencarian real-time** (nama anak / nama orang tua / kode ID).
+- Aksi per baris: lihat detail, edit, input pengukuran.
+- (🔵) Penanda peserta belum hadir 2 bulan berturut-turut (`KADER-006`).
+- Tombol **+ Tambah Peserta**.
+
+## C3. Tambah / Edit Data Peserta 🟢
+*(Ref: `KADER-001`, `KADER-002`, `KADER-004`)*
+**Konten:**
+- Form: nama anak, tanggal lahir, jenis kelamin, nama orang tua/wali, nomor WhatsApp orang tua, alamat.
+- Saat simpan data baru → sistem **menghasilkan Kode ID unik** yang ditampilkan agar bisa diberikan ke orang tua.
+- Mode edit untuk memperbarui data yang sudah ada.
+- Validasi field wajib + pesan error jelas.
+
+## C4. Detail Peserta (Tampilan Kader) 🟢
+*(Ref: `KADER-004`, `RIWAYAT-001` dari sisi kader, `GRAFIK-007`)*
+**Konten:**
+- Data profil anak + orang tua, Kode ID.
+- **Riwayat pengukuran** anak (seluruh kunjungan).
+- **Grafik pertumbuhan** anak (pemantauan).
+- Riwayat & jadwal imunisasi anak.
+- Tombol: Input Pengukuran Baru, Edit Data, Atur Jadwal Imunisasi.
+
+## C5. Input Hasil Pengukuran 🟢
+*(Ref: `KADER-007` s/d `KADER-013`)*
+**Konten:**
+- Pilih/konfirmasi peserta (dari daftar atau pencarian).
+- Form **berbasis dropdown & pilihan ganda** (bukan teks bebas) untuk: tanggal kunjungan, berat badan (kg), tinggi/panjang badan (cm), lingkar kepala (cm, opsional), status imunisasi yang diberikan.
+- **Validasi otomatis** (mis. berat ≤ 50 kg, tinggi ≥ 30 cm) dengan pesan error jelas.
+- Field **catatan singkat** (maks. 200 karakter).
+- Setelah simpan: sistem **menghitung & menampilkan status pertumbuhan** (Normal / Perlu Perhatian / Kritis) berdasar tabel WHO.
+- Audit trail otomatis (nama kader + waktu input).
+- Data dapat diedit dalam **24 jam** setelah penyimpanan (`KADER-013`).
+- Loading state saat menyimpan.
+
+## C6. Kelola Jadwal Kegiatan 🟢
+*(Ref: `KADER-014`, `KADER-016`)*
+**Konten:**
+- Form tetapkan/ubah jadwal Posyandu bulanan (tanggal & waktu).
+- Tampilan kalender kegiatan gabungan (Posyandu + imunisasi peserta).
+- Daftar jadwal mendatang & riwayat kegiatan.
+
+## C7. Kelola Jadwal Imunisasi Peserta 🟢
+*(Ref: `KADER-015`)*
+**Konten:**
+- Pilih peserta → tetapkan jadwal imunisasi berdasarkan rekomendasi program imunisasi nasional.
+- Daftar jadwal imunisasi per peserta dengan status.
+- Terhubung ke notifikasi otomatis imunisasi (`NOTIF-003`).
+
+## C8. Kirim Pengumuman / Notifikasi 🟢
+*(Ref: `NOTIF-005`, `NOTIF-007`)*
+**Konten:**
+- Pilih target: **seluruh peserta** atau peserta tertentu.
+- Field isi pesan (Bahasa Indonesia sederhana).
+- Pratinjau pesan + tombol **Kirim**.
+- Riwayat pengumuman terkirim.
+
+## C9. Pemantauan Kehadiran 🔵 *(Iterasi 2)*
+*(Ref: `HADIR-001` s/d `HADIR-004`)*
+**Konten:**
+- **Penandaan kehadiran digital** per sesi kegiatan (centang dari daftar peserta).
+- Daftar otomatis peserta absen ≥ 2 bulan berturut-turut.
+- **Persentase tingkat kehadiran** per peserta (rentang waktu dapat dipilih).
+- Tombol ekspor data kehadiran (cetak/simpan).
+
+## C10. Rekap & Laporan Bulanan 🔵 *(Iterasi 2)*
+*(Ref: `LAPORAN-001` s/d `LAPORAN-004`)*
+**Konten:**
+- Laporan bulanan otomatis: rekap jumlah peserta hadir, rata-rata berat & tinggi badan, status pertumbuhan kolektif.
+- **Statistik visual** (kartu angka + grafik batang) langsung di halaman.
+- Tombol **Unduh PDF / Excel (.xlsx)** satu klik.
+- Pilihan periode laporan (bulanan / kuartal).
+
+---
+
+# D. AREA ADMINISTRATOR
+*Pengelolaan teknis & integritas data. (Ref: Tabel Hak Akses 8.2, `AUTH-006`)*
+
+## D1. Dashboard Administrator 🟢
+**Konten:**
+- Ringkasan sistem: jumlah kader, jumlah peserta, aktivitas terbaru.
+- Pintasan ke manajemen akun kader & peserta.
+- Status sistem (opsional).
+
+## D2. Manajemen Akun Kader 🟢
+*(Ref: `AUTH-006`, Tabel Hak Akses — "Manajemen Akun Kader: hanya Admin")*
+**Konten:**
+- Daftar akun kader.
+- **Buat akun kader baru** (nama, nomor WhatsApp, kata sandi awal, peran).
+- Edit / nonaktifkan / reset akun kader.
+
+## D3. Manajemen Peserta (Admin) 🟢
+**Konten:**
+- Akses penuh CRUD data peserta (sebagai cadangan/koreksi lintas kader).
+- Pencarian & filter seluruh peserta.
+
+## D4. Konfigurasi Sistem 🟢
+*(Ref: bagian 2.4 batasan, integrasi notifikasi)*
+**Konten:**
+- Pengaturan unit Posyandu (MVP: Posyandu Kartini IV A).
+- Konfigurasi integrasi notifikasi (WhatsApp Business API / Web Push).
+- Parameter validasi & ambang status pertumbuhan (acuan WHO/Permenkes No. 2/2020).
+
+## D5. Log Aktivitas Sistem 🔵 *(Iterasi 2)*
+*(Ref: `AUTH-007`, `NOTIF-006`)*
+**Konten:**
+- Log aktivitas login (waktu + perangkat).
+- Log pengiriman notifikasi (berhasil/gagal per peserta).
+- Filter berdasarkan tanggal/pengguna/jenis aktivitas.
+
+---
+
+# E. HALAMAN SISTEM / UTILITAS
+*Berlaku lintas peran.*
+
+## E1. Halaman Error 404 / Halaman Tidak Ditemukan 🟢
+Pesan ramah + tombol kembali ke dashboard.
+
+## E2. Halaman Akses Ditolak (403) 🟢
+*(Ref: `SEC-004`, `SEC-005` — RBAC)* Muncul saat pengguna mencoba mengakses data/fitur di luar perannya.
+
+## E3. Halaman Sesi Berakhir 🟢
+*(Ref: `AUTH-005`)* Pemberitahuan auto-logout setelah 30 menit idle + tombol login ulang.
+
+## E4. Halaman Pemeliharaan (Maintenance) 🟢
+*(Ref: `AVAIL-002`)* Ditampilkan saat maintenance terjadwal (22.00–05.00 WIB).
+
+---
+
+## Lampiran: Matriks Halaman × Modul
+
+| Halaman | Modul SRS | Fase |
+|---|---|---|
+| A2–A4 Login/Register/Lupa Sandi | AUTH | 🟢 |
+| B1–B4 Beranda/Riwayat/Imunisasi | Riwayat I-1 | 🟢 |
+| B5 Grafik Pertumbuhan | Grafik I-3 | 🟢 |
+| B6–B7 Jadwal & Notifikasi | Notifikasi I-2 | 🟢 |
+| C2–C5 Peserta & Input Data | Dashboard Kader I-4 | 🟢 |
+| C6–C7 Jadwal & Imunisasi | Dashboard Kader I-4 | 🟢 |
+| C8 Pengumuman | Notifikasi I-2 | 🟢 |
+| C9 Kehadiran | Pemantauan Kehadiran I-6 | 🔵 |
+| C10 Laporan | Rekap & Laporan I-5 | 🔵 |
+| D1–D4 Admin | Autentikasi & tata kelola | 🟢 |
+| D5 Log | AUTH-007 / NOTIF-006 | 🔵 |
+
+---
+
+*Disusun berdasarkan SRS SiPosya v1.0 — Kelompok 12 TI-C1, D4 Teknik Informatika, Universitas Airlangga, 2026.*

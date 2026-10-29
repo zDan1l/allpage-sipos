@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiPosya — Panduan Pengenalan (Onboarding)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --surface:#ffffff;
+    --surface-2:#fafbfc;
+    --border:#ebedf0;
+    --border-strong:#e1e4e8;
+    --text:#14161a;
+    --text-2:#5b626e;
+    --text-3:#8a909c;
+    --accent:#0f9d7a;
+    --accent-weak:#e7f6f1;
+    --accent-ink:#0b7a5f;
+    --green:#15a05a;--green-bg:#e8f6ed;
+    --amber:#c77a16;--amber-bg:#fbf1e1;
+    --blue:#3a6ff0;--blue-bg:#eaf0fe;
+    --radius:16px;--radius-sm:10px;--radius-xs:8px;
+    --shadow-sm:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.05);
+    --shadow-md:0 4px 16px rgba(16,24,40,.06),0 12px 32px rgba(16,24,40,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    font-size:14px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:-.01em;
+    min-height:100vh;
+    display:flex;flex-direction:column;
+  }
+  .top-strip{
+    padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:#fff;
+  }
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit}
+  .brand .logo{
+    width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(145deg,var(--accent),#0bbf90);
+    display:grid;place-items:center;color:#fff;font-weight:700;font-size:16px;box-shadow:0 4px 10px rgba(15,157,122,.28);
+  }
+  .brand .name{font-weight:700;font-size:15px;letter-spacing:-.02em}
+  .brand .sub{font-size:11px;color:var(--text-3)}
+
+  .center-wrap{
+    flex:1;display:flex;align-items:center;justify-content:center;padding:36px 16px;
+  }
+  .onboarding-card{
+    width:100%;max-width:620px;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);padding:36px 32px;box-shadow:var(--shadow-md);
+  }
+  
+  /* Progress Indicators */
+  .onboarding-steps{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:28px}
+  .step-dot{width:28px;height:6px;border-radius:999px;background:#e2e5e9;transition:all .2s}
+  .step-dot.active{background:var(--accent);width:44px}
+
+  /* Slide Content */
+  .slide-box{text-align:center}
+  .slide-badge{
+    display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;
+    background:var(--accent-weak);color:var(--accent-ink);font-size:12px;font-weight:600;margin-bottom:14px;
+  }
+  .slide-title{font-size:24px;font-weight:700;letter-spacing:-.025em;margin-bottom:10px;color:var(--text)}
+  .slide-desc{font-size:14.5px;color:var(--text-2);max-width:480px;margin:0 auto 24px;line-height:1.55}
+
+  /* Visual Demo Mockup */
+  .visual-preview{
+    background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);
+    padding:20px;margin-bottom:28px;text-align:left;box-shadow:var(--shadow-sm);
+  }
+  .preview-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:var(--radius-xs);padding:12px 14px;margin-bottom:8px}
+  .preview-item:last-child{margin-bottom:0}
+  .p-ico{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;flex-shrink:0}
+  .p-info .h{font-size:13px;font-weight:600}
+  .p-info .d{font-size:11.5px;color:var(--text-3);margin-top:2px}
+
+  /* Foot buttons */
+  .foot-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-top:20px;border-top:1px solid var(--border)}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--radius-sm);
+    font-weight:600;font-size:13px;cursor:pointer;border:1px solid transparent;text-decoration:none;
+  }
+  .btn.primary{background:var(--accent);color:#fff;box-shadow:0 2px 6px rgba(15,157,122,.25)}
+  .btn.primary:hover{background:var(--accent-ink)}
+  .btn.ghost{background:var(--surface);border-color:var(--border-strong);color:var(--text-2)}
+  .btn.ghost:hover{background:var(--surface-2);color:var(--text)}
+</style>
+</head>
+<body>
+
+<header class="top-strip">
+  <a href="landing.html" class="brand">
+    <div class="logo">S</div>
+    <div>
+      <div class="name">SiPosya</div>
+      <div class="sub">Posyandu Kartini IV A</div>
+    </div>
+  </a>
+  <span style="font-size:12.5px;color:var(--text-3);font-weight:500">Langkah 2 dari 4</span>
+</header>
+
+<div class="center-wrap">
+  <div class="onboarding-card">
+    
+    <!-- Step Dots -->
+    <div class="onboarding-steps">
+      <div class="step-dot"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <!-- Active Tutorial Slide -->
+    <div class="slide-box">
+      <span class="slide-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+        Fitur Utama SiPosya
+      </span>
+      <h1 class="slide-title">Memahami Grafik & Riwayat Pertumbuhan</h1>
+      <p class="slide-desc">
+        Setiap kali kader menginput pengukuran berat dan tinggi anak Anda, sistem otomatis mengevaluasinya dengan standar Kementerian Kesehatan RI dan WHO.
+      </p>
+
+      <!-- Visual Preview Mock -->
+      <div class="visual-preview">
+        <div class="preview-item">
+          <div class="p-ico" style="background:var(--green-bg);color:var(--green)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+          </div>
+          <div class="p-info">
+            <div class="h">Status Hijau (Normal)</div>
+            <div class="d">Pertumbuhan anak berada dalam batas kurva sehat median standar WHO (-2 SD hingga +2 SD).</div>
+          </div>
+        </div>
+        <div class="preview-item">
+          <div class="p-ico" style="background:var(--amber-bg);color:var(--amber)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+          </div>
+          <div class="p-info">
+            <div class="h">Status Kuning (Perlu Perhatian)</div>
+            <div class="d">Pertumbuhan mendekati batas ambang; dianjurkan konsultasi gizi atau evaluasi asupan bersama kader.</div>
+          </div>
+        </div>
+        <div class="preview-item">
+          <div class="p-ico" style="background:var(--blue-bg);color:var(--blue)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          </div>
+          <div class="p-info">
+            <div class="h">Pengingat Otomatis via WhatsApp & Web Push</div>
+            <div class="d">Anda akan menerima pemberitahuan otomatis H-3, H-1, dan hari-H saat Posyandu tiba.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Foot Actions -->
+    <div class="foot-actions">
+      <a href="peserta-dashboard.html" class="btn ghost">Lewati Tutorial</a>
+      <div style="display:flex;gap:10px">
+        <a href="peserta-dashboard.html" class="btn primary">
+          Selanjutnya &rarr;
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

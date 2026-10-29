@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiPosya — Jadwal & Kalender Kegiatan Anak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --surface:#ffffff;
+    --surface-2:#fafbfc;
+    --border:#ebedf0;
+    --border-strong:#e1e4e8;
+    --text:#14161a;
+    --text-2:#5b626e;
+    --text-3:#8a909c;
+    --accent:#0f9d7a;
+    --accent-weak:#e7f6f1;
+    --accent-ink:#0b7a5f;
+    --green:#15a05a;--green-bg:#e8f6ed;
+    --amber:#c77a16;--amber-bg:#fbf1e1;
+    --red:#d64545;--red-bg:#fbeaea;
+    --blue:#3a6ff0;--blue-bg:#eaf0fe;
+    --purple:#6c5ce7;--purple-bg:#f1effd;
+    --radius:16px;--radius-sm:10px;--radius-xs:8px;
+    --shadow-sm:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.05);
+    --shadow-md:0 2px 6px rgba(16,24,40,.05),0 8px 24px rgba(16,24,40,.05);
+    --sidebar-w:260px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--text);font-size:14px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;letter-spacing:-.01em;
+  }
+  .app{display:flex;min-height:100vh}
+
+  /* SIDEBAR */
+  .sidebar{
+    width:var(--sidebar-w);flex-shrink:0;background:var(--surface);
+    border-right:1px solid var(--border);display:flex;flex-direction:column;
+    padding:18px 14px;position:sticky;top:0;height:100vh;
+  }
+  .brand{display:flex;align-items:center;gap:11px;padding:6px 8px 16px;text-decoration:none;color:inherit}
+  .brand .logo{
+    width:38px;height:38px;border-radius:11px;flex-shrink:0;background:linear-gradient(145deg,var(--accent),#0bbf90);
+    display:grid;place-items:center;color:#fff;font-weight:700;font-size:17px;box-shadow:0 4px 10px rgba(15,157,122,.28);
+  }
+  .brand .name{font-weight:700;font-size:15.5px;letter-spacing:-.02em}
+  .brand .sub{font-size:11.5px;color:var(--text-3);font-weight:450}
+
+  .child-card{
+    background:var(--accent-weak);border:1px solid #c2ece0;border-radius:var(--radius-sm);
+    padding:12px;margin:8px 0 14px;display:flex;align-items:center;gap:10px;
+  }
+  .child-avatar{
+    width:38px;height:38px;border-radius:50%;background:#f0924c;color:#fff;
+    display:grid;place-items:center;font-weight:700;font-size:14px;flex-shrink:0;
+  }
+  .child-name{font-weight:700;font-size:13px;color:var(--accent-ink)}
+  .child-meta{font-size:11px;color:var(--text-2)}
+
+  .nav-group{margin-top:8px}
+  .nav-label{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);padding:6px 10px 7px}
+  .nav-item{
+    display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:var(--radius-sm);
+    color:var(--text-2);font-weight:500;font-size:13.5px;cursor:pointer;margin-bottom:2px;text-decoration:none;
+  }
+  .nav-item:hover{background:var(--surface-2);color:var(--text)}
+  .nav-item.active{background:var(--accent-weak);color:var(--accent-ink);font-weight:600}
+  .nav-item .ico{width:18px;height:18px;flex-shrink:0}
+  .nav-item .badge{margin-left:auto;font-size:11px;font-weight:600;background:#eef0f3;color:var(--text-2);padding:1px 8px;border-radius:999px}
+
+  .side-foot{margin-top:auto;display:flex;flex-direction:column;gap:12px}
+  .profile{display:flex;align-items:center;gap:10px;padding:8px 6px;border-top:1px solid var(--border)}
+  .avatar{width:34px;height:34px;border-radius:50%;background:#3a6ff0;color:#fff;display:grid;place-items:center;font-weight:600;font-size:13px;flex-shrink:0}
+
+  /* MAIN */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{
+    height:62px;flex-shrink:0;display:flex;align-items:center;gap:16px;padding:0 26px;
+    border-bottom:1px solid var(--border);background:rgba(255,255,255,.75);backdrop-filter:blur(8px);
+    position:sticky;top:0;z-index:10;
+  }
+  .crumb{font-size:13.5px;color:var(--text-3);font-weight:500}
+  .crumb b{color:var(--text);font-weight:600}
+  
+  .content{padding:24px 26px 40px;max-width:1200px;width:100%;margin:0 auto}
+
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+  .page-head h1{font-size:23px;font-weight:700;letter-spacing:-.03em}
+  .page-head .p-sub{font-size:13.5px;color:var(--text-2);margin-top:3px}
+
+  .layout-grid{display:grid;grid-template-columns:1.8fr 1.2fr;gap:20px}
+
+  /* Calendar Card */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow-sm);margin-bottom:20px}
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .cal-title{font-size:16px;font-weight:700}
+  
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+  .cal-day-head{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;padding:6px 0}
+  .cal-cell{
+    height:56px;border-radius:var(--radius-xs);border:1px solid var(--border);padding:6px;font-size:12px;font-weight:600;
+    display:flex;flex-direction:column;justify-content:space-between;background:#fff;
+  }
+  .cal-cell.muted{color:var(--text-3);background:var(--surface-2);opacity:.6}
+  .cal-cell.event-posyandu{border-color:var(--accent);background:var(--accent-weak)}
+  .cal-cell.event-imunisasi{border-color:#c7d2fe;background:#eef2ff}
+  .cal-cell .badge-dot{width:6px;height:6px;border-radius:50%;margin:0 auto}
+
+  /* Event Details List */
+  .event-item{
+    border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:12px;background:#fff;
+  }
+  .event-item.featured{border-left:4px solid var(--accent);background:#f9fdfb}
+  .event-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+  .event-type{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-ink)}
+  .event-title{font-size:14px;font-weight:700;color:var(--text)}
+  .event-desc{font-size:12.5px;color:var(--text-2);margin-top:4px}
+  .event-meta{display:flex;gap:12px;font-size:11.5px;color:var(--text-3);margin-top:8px}
+
+  .reminder-card{
+    background:var(--blue-bg);border:1px solid #cce0ff;border-radius:var(--radius-sm);
+    padding:14px 16px;font-size:12.5px;color:#1e40af;margin-top:16px;
+  }
+
+  @media(max-width:960px){
+    .layout-grid{grid-template-columns:1fr}
+  }
+  @media(max-width:860px){
+    .sidebar{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR PESERTA -->
+  <aside class="sidebar">
+    <a href="landing.html" class="brand">
+      <div class="logo">S</div>
+      <div>
+        <div class="name">SiPosya</div>
+        <div class="sub">Area Orang Tua / Peserta</div>
+      </div>
+    </a>
+
+    <div class="child-card">
+      <div class="child-avatar">AF</div>
+      <div style="flex:1;min-width:0">
+        <div class="child-name">Aisyah Farida</div>
+        <div class="child-meta">24 Bulan &middot; ID: PK-0021</div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Menu Anak</div>
+      <a href="peserta-dashboard.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Beranda Anak
+      </a>
+      <a href="peserta-riwayat.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>
+        Riwayat Kesehatan
+      </a>
+      <a href="peserta-imunisasi.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Jadwal Imunisasi
+      </a>
+      <a href="peserta-grafik.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+        Grafik Pertumbuhan
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Jadwal & Info</div>
+      <a href="peserta-jadwal.html" class="nav-item active">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Jadwal & Kalender
+      </a>
+      <a href="peserta-notifikasi.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        Notifikasi <span class="badge">2</span>
+      </a>
+      <a href="peserta-pengaturan.html" class="nav-item">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        Pengaturan
+      </a>
+    </div>
+
+    <div class="side-foot">
+      <div class="profile">
+        <div class="avatar">DL</div>
+        <div>
+          <div style="font-weight:600;font-size:13px">Dewi Lestari</div>
+          <div style="font-size:11.5px;color:var(--text-3)">Orang Tua / Wali</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb">Posyandu Kartini IV A &nbsp;&middot;&nbsp; <b>Jadwal & Kalender Kegiatan</b></div>
+    </header>
+
+    <main class="content">
+
+      <div class="page-head">
+        <div>
+          <h1>Jadwal Kegiatan & Kalender Posyandu</h1>
+          <div class="p-sub">Tampilan kalender gabungan jadwal penimbangan bulanan dan agenda vaksinasi balita (Ref: <code>KADER-016</code>, <code>NOTIF-001</code>)</div>
+        </div>
+      </div>
+
+      <div class="layout-grid">
+        
+        <!-- KALENDER BULANAN -->
+        <div class="card">
+          <div class="cal-header">
+            <div class="cal-title">November 2026</div>
+            <div style="font-size:12px;color:var(--text-3)">Posyandu Kartini IV A</div>
+          </div>
+
+          <div class="cal-grid">
+            <div class="cal-day-head">Min</div><div class="cal-day-head">Sen</div><div class="cal-day-head">Sel</div>
+            <div class="cal-day-head">Rab</div><div class="cal-day-head">Kam</div><div class="cal-day-head">Jum</div><div class="cal-day-head">Sab</div>
+
+            <!-- Week 1 -->
+            <div class="cal-cell">1</div><div class="cal-cell">2</div><div class="cal-cell">3</div>
+            <div class="cal-cell">4</div><div class="cal-cell">5</div><div class="cal-cell">6</div><div class="cal-cell">7</div>
+
+            <!-- Week 2 -->
+            <div class="cal-cell">8</div><div class="cal-cell">9</div><div class="cal-cell">10</div>
+            <div class="cal-cell">11</div><div class="cal-cell">12</div><div class="cal-cell">13</div>
+            <div class="cal-cell event-posyandu">
+              <span>14</span>
+              <span class="badge-dot" style="background:var(--accent)" title="Hari Posyandu"></span>
+            </div>
+
+            <!-- Week 3 -->
+            <div class="cal-cell">15</div><div class="cal-cell">16</div><div class="cal-cell">17</div>
+            <div class="cal-cell">18</div><div class="cal-cell">19</div><div class="cal-cell">20</div><div class="cal-cell">21</div>
+
+            <!-- Week 4 -->
+            <div class="cal-cell">22</div><div class="cal-cell">23</div><div class="cal-cell">24</div>
+            <div class="cal-cell">25</div><div class="cal-cell">26</div><div class="cal-cell">27</div><div class="cal-cell">28</div>
+
+            <!-- Week 5 -->
+            <div class="cal-cell">29</div><div class="cal-cell">30</div>
+            <div class="cal-cell muted">1</div><div class="cal-cell muted">2</div><div class="cal-cell muted">3</div><div class="cal-cell muted">4</div><div class="cal-cell muted">5</div>
+          </div>
+
+          <div style="display:flex;gap:16px;margin-top:16px;font-size:12px;color:var(--text-2)">
+            <span style="display:inline-flex;align-items:center;gap:6px"><i style="width:10px;height:10px;background:var(--accent-weak);border:1px solid var(--accent);border-radius:3px;display:inline-block"></i> Jadwal Posyandu Rutin</span>
+            <span style="display:inline-flex;align-items:center;gap:6px"><i style="width:10px;height:10px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:3px;display:inline-block"></i> Imunisasi Anak</span>
+          </div>
+        </div>
+
+        <!-- DAFTAR AGENDA TERDEKAT -->
+        <div>
+          <div class="event-item featured">
+            <div class="event-top">
+              <span class="event-type">Kegiatan Terdekat &middot; 16 Hari Lagi</span>
+              <span style="font-size:11px;font-weight:700;color:var(--accent-ink)">WA & Push Aktif</span>
+            </div>
+            <div class="event-title">Posyandu Rutin Bulan November 2026</div>
+            <div class="event-desc">Penimbangan berat badan balita, pengukuran tinggi, pembagian Kapsul Vitamin A & obat cacing.</div>
+            <div class="event-meta">
+              <span>📅 Sabtu, 14 Nov 2026</span>
+              <span>⏰ 08.00 - 11.30 WIB</span>
+              <span>📍 Balai RW 04</span>
+            </div>
+          </div>
+
+          <div class="event-item">
+            <div class="event-top">
+              <span class="event-type" style="color:var(--purple)">Imunisasi Rekomendasi</span>
+            </div>
+            <div class="event-title">Campak-Rubela Lanjutan (Booster)</div>
+            <div class="event-desc">Dosis penguat imunitas campak usia 24 bulan untuk ananda Aisyah. Diberikan gratis oleh petugas Puskesmas di Posyandu.</div>
+            <div class="event-meta">
+              <span>📅 Sabtu, 14 Nov 2026</span>
+              <span>📍 Meja Imunisasi Posyandu</span>
+            </div>
+          </div>
+
+          <div class="event-item">
+            <div class="event-top">
+              <span class="event-type" style="color:var(--text-3)">Bulan Depan</span>
+            </div>
+            <div class="event-title">Posyandu Rutin Desember 2026</div>
+            <div class="event-desc">Penimbangan tutup tahun dan evaluasi tumbuh kembang semester dua.</div>
+            <div class="event-meta">
+              <span>📅 Sabtu, 12 Des 2026</span>
+              <span>⏰ 08.00 WIB</span>
+            </div>
+          </div>
+
+          <div class="reminder-card">
+            <b>Pengingat Otomatis Aktif:</b> Anda akan otomatis menerima notifikasi pengingat via WhatsApp pada Rabu 11 Nov (H-3), Jumat 13 Nov (H-1), dan Sabtu 14 Nov pukul 07.00 WIB (Hari-H).
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+</div>
+
+</body>
+</html>

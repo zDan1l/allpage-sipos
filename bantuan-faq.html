@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SiPosya — Pusat Bantuan & FAQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --surface:#ffffff;
+    --surface-2:#fafbfc;
+    --border:#ebedf0;
+    --border-strong:#e1e4e8;
+    --text:#14161a;
+    --text-2:#5b626e;
+    --text-3:#8a909c;
+    --accent:#0f9d7a;
+    --accent-weak:#e7f6f1;
+    --accent-ink:#0b7a5f;
+    --green:#15a05a;--green-bg:#e8f6ed;
+    --amber:#c77a16;--amber-bg:#fbf1e1;
+    --red:#d64545;--red-bg:#fbeaea;
+    --blue:#3a6ff0;--blue-bg:#eaf0fe;
+    --radius:16px;--radius-sm:10px;--radius-xs:8px;
+    --shadow-sm:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.05);
+    --shadow-md:0 2px 6px rgba(16,24,40,.05),0 8px 24px rgba(16,24,40,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    font-size:14px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:-.01em;
+    padding-bottom:50px;
+  }
+  .nav{
+    position:sticky;top:0;z-index:20;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);padding:0 24px;
+  }
+  .nav-inner{max-width:1100px;margin:0 auto;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit}
+  .brand .logo{
+    width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(145deg,var(--accent),#0bbf90);
+    display:grid;place-items:center;color:#fff;font-weight:700;font-size:16px;box-shadow:0 4px 10px rgba(15,157,122,.28);
+  }
+  .brand .name{font-weight:700;font-size:15px;letter-spacing:-.02em}
+  .brand .sub{font-size:11px;color:var(--text-3)}
+
+  .content{max-width:1100px;margin:32px auto 0;padding:0 24px}
+  
+  .hero-faq{text-align:center;max-width:640px;margin:0 auto 36px}
+  .hero-faq h1{font-size:32px;font-weight:750;letter-spacing:-.03em;margin-bottom:8px}
+  .hero-faq p{font-size:15px;color:var(--text-2)}
+
+  .search-box{
+    display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border-strong);
+    border-radius:var(--radius-sm);padding:12px 16px;box-shadow:var(--shadow-sm);max-width:540px;margin:20px auto 0;
+  }
+  .search-box input{border:none;background:none;outline:none;flex:1;font:inherit;font-size:14px;color:var(--text)}
+
+  .layout{display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-top:36px}
+  
+  /* FAQ Accordion cards */
+  .faq-group{margin-bottom:28px}
+  .faq-group-title{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .faq-item{
+    background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 20px;
+    margin-bottom:12px;box-shadow:var(--shadow-sm);
+  }
+  .faq-q{font-size:14.5px;font-weight:600;color:var(--text);display:flex;justify-content:space-between;align-items:center}
+  .faq-a{font-size:13.5px;color:var(--text-2);margin-top:10px;line-height:1.6}
+
+  /* Status legend cards */
+  .status-box{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow-sm);margin-bottom:20px}
+  .status-box h3{font-size:15px;font-weight:700;margin-bottom:14px}
+  .status-card{padding:12px;border-radius:var(--radius-xs);margin-bottom:10px;font-size:12.5px}
+  .status-card.ok{background:var(--green-bg);border:1px solid #c0e8d0;color:#0b6139}
+  .status-card.warn{background:var(--amber-bg);border:1px solid #f6ddbe;color:#85440c}
+  .status-card.crit{background:var(--red-bg);border:1px solid #f9d1d1;color:#8c1d1d}
+
+  /* Contact card */
+  .contact-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow-sm)}
+  .contact-card h3{font-size:15px;font-weight:700;margin-bottom:6px}
+  .contact-card p{font-size:13px;color:var(--text-2);margin-bottom:16px}
+  .kader-person{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border)}
+  .avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:600;font-size:13px}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 14px;border-radius:var(--radius-sm);
+    font-weight:600;font-size:13px;cursor:pointer;border:1px solid transparent;text-decoration:none;
+  }
+  .btn.primary{background:var(--accent);color:#fff;box-shadow:0 2px 6px rgba(15,157,122,.25)}
+  .btn.primary:hover{background:var(--accent-ink)}
+
+  @media(max-width:860px){
+    .layout{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="landing.html" class="brand">
+      <div class="logo">S</div>
+      <div>
+        <div class="name">SiPosya</div>
+        <div class="sub">Posyandu Kartini IV A</div>
+      </div>
+    </a>
+    <div style="display:flex;gap:10px">
+      <a href="landing.html" class="btn" style="border:1px solid var(--border-strong);background:#fff;color:var(--text)">&larr; Kembali</a>
+      <a href="login.html" class="btn primary">Masuk ke Akun</a>
+    </div>
+  </div>
+</nav>
+
+<div class="content">
+
+  <div class="hero-faq">
+    <h1>Pusat Bantuan & Tanya Jawab</h1>
+    <p>Informasi seputar pendaftaran akun, Buku KIA digital, jadwal, dan acuan status pertumbuhan standar WHO.</p>
+    
+    <div class="search-box">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" placeholder="Ketik pertanyaan atau kata kunci bantuan...">
+    </div>
+  </div>
+
+  <div class="layout">
+    
+    <!-- FAQ List -->
+    <div>
+      <div class="faq-group">
+        <div class="faq-group-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          Pendaftaran & Akun
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Bagaimana cara mendapatkan Kode ID Anak untuk registrasi? <span>&minus;</span></div>
+          <div class="faq-a">
+            Kode ID Anak (contoh format: <b>PK-0021</b>) digenerate secara otomatis oleh sistem saat kader Posyandu mendaftarkan anak Anda di meja pencatatan. Silakan tanyakan kepada Bu Sri atau kader yang bertugas pada hari Posyandu.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Apakah satu akun orang tua bisa memantau lebih dari satu anak? <span>+</span></div>
+          <div class="faq-a">
+            <b>Ya.</b> Sesuai kebutuhan <code>RIWAYAT-008</code>, satu akun orang tua dapat menautkan lebih dari satu balita. Anda dapat menambahkan anak kedua melalui menu <b>Pengaturan Akun &rarr; Kelola Balita</b> dengan memasukkan Kode ID Anak masing-masing.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Apakah akun Kader bisa mendaftar mandiri di web? <span>+</span></div>
+          <div class="faq-a">
+            <b>Tidak bisa.</b> Sesuai standar keamanan <code>AUTH-006</code>, akun kader hanya dapat dibuat dan diotorisasi langsung oleh Administrator Posyandu untuk menjaga integritas data catatan kesehatan balita.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-group">
+        <div class="faq-group-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          Jadwal & Notifikasi
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Kapan notifikasi pengingat Posyandu dikirimkan? <span>+</span></div>
+          <div class="faq-a">
+            Sistem mengirimkan notifikasi bertingkat: <b>H-3</b> (tiga hari sebelum), <b>H-1</b> (sehari sebelum), dan <b>hari-H pukul 07.00 WIB</b> melalui Web Push Notification browser dan pesan WhatsApp sebagai jalur cadangan.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q">Bagaimana jika Buku KIA fisik saya hilang atau basah? <span>+</span></div>
+          <div class="faq-a">
+            Tenang, seluruh riwayat penimbangan, imunisasi, dan catatan kader tersimpan aman di server cloud SiPosya. Anda dapat melihat, mengunduh, atau mencetaknya kembali kapan saja dari ponsel.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Info & Contact -->
+    <div>
+      <div class="status-box">
+        <h3>Panduan Status Pertumbuhan WHO</h3>
+        <div class="status-card ok">
+          <b>🟢 Normal:</b> Berat dan tinggi berada di antara -2 SD hingga +2 SD kurva pertumbuhan WHO. Lanjutkan pola makan gizi seimbang.
+        </div>
+        <div class="status-card warn">
+          <b>🟡 Perlu Perhatian:</b> Tren berat badan mendatar atau berada di batas -2 SD. Dianjurkan evaluasi menu MPASI dan konsultasi kader.
+        </div>
+        <div class="status-card crit">
+          <b>🔴 Kritis:</b> Pengukuran berada di bawah -3 SD (gizi buruk/stunting). Segera rujuk ke Puskesmas untuk intervensi medis terpadu.
+        </div>
+      </div>
+
+      <div class="contact-card">
+        <h3>Kontak Pengurus Posyandu</h3>
+        <p>Butuh bantuan teknis atau informasi pendaftaran balita baru di Posyandu Kartini IV A?</p>
+
+        <div class="kader-person">
+          <div class="avatar" style="background:#6c5ce7">SR</div>
+          <div>
+            <div style="font-weight:600;font-size:13px">Sri Rahayu</div>
+            <div style="font-size:11.5px;color:var(--text-3)">Koordinator Kader Posyandu</div>
+          </div>
+        </div>
+
+        <div class="kader-person">
+          <div class="avatar" style="background:#0f9d7a">NW</div>
+          <div>
+            <div style="font-weight:600;font-size:13px">Ning Wulandari</div>
+            <div style="font-size:11.5px;color:var(--text-3)">Kader Pelaksana Balai RW 04</div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px">
+          <a href="https://wa.me/" class="btn primary" style="width:100%">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Hubungi via WhatsApp Posyandu
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
